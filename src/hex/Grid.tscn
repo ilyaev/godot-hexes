@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/hex/Grid.gd" type="Script" id=1]
+
+[node name="HexGrid" type="Spatial" index="0"]
+
+script = ExtResource( 1 )
+
+[node name="Regions" type="Spatial" parent="." index="0"]
+
+[node name="Hexes" type="Spatial" parent="." index="1"]
+
+

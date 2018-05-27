@@ -1,0 +1,27 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=3
+
+[application]
+
+config/name="Godot Dice Wars"
+run/main_scene="res://src/Game.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+global="*res://src/global.gd"
+
+[display]
+
+window/size/width=800
+
+[rendering]
+
+environment/default_environment="res://src/default_env.tres"
