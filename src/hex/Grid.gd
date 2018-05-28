@@ -39,7 +39,6 @@ func _ready():
 	global.print_profile('Build Borders')
 	build_regions()
 	global.print_profile('Build Regions')
-
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
 
 func build_regions():
@@ -352,6 +351,7 @@ func build_hexes():
 				hex.id = [row,col].hash()
 
 				$Hexes.add_child(hex)
+				hex.hide()
 
 				hex.add_offset(offset)
 

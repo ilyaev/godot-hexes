@@ -25,8 +25,9 @@ func set_mesh(mesh):
 	mat.set_albedo(color)
 	# mat.flags_transparent = 1
 	$Mesh.set_material_override(mat)
+	# return
 
-	var tool = MeshDataTool.new()
+	var tool = global.MeshTool
 	tool.create_from_surface(mesh, 0)
 
 	var faces = []
@@ -52,9 +53,11 @@ func _physics_process(delta):
 
 func _on_HexRegion_mouse_entered():
 	print('Mouse here! ', id)
+	translate_object_local(Vector3(0,0,0.09))
 	pass # replace with function body
 
 
 func _on_HexRegion_mouse_exited():
 	print('Mouse Out! ', id)
+	translate_object_local(Vector3(0,0,-0.09))
 	pass # replace with function body
