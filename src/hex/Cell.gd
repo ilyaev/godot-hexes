@@ -1,6 +1,6 @@
 extends Area
 
-var surface = SurfaceTool.new()
+var surface # = SurfaceTool.new()
 var mat = SpatialMaterial.new()
 var mesh = Mesh.new()
 var radius = 0.5
@@ -21,6 +21,7 @@ var region_id = 0
 var is_capital = false
 
 func _ready():
+	surface = global.Surface
 	calculate_coordinates()
 	build_shape()
 	build_material()

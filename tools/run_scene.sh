@@ -1,2 +1,2 @@
 #!/bin/bash
-g3 --path /Users/ilyaev/godot/3dCubes ${1/.gd/.tscn}
+g3 --path /Users/ilyaev/godot/godot-hexes ${1/.gd/.tscn}

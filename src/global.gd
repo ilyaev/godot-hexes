@@ -3,6 +3,7 @@ extends Node
 var mode = 'dev'
 var _start_time = 0
 var MeshTool = MeshDataTool.new()
+var Surface = SurfaceTool.new()
 
 func start_profile():
 	_start_time = OS.get_ticks_msec()

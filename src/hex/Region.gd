@@ -25,8 +25,16 @@ func set_mesh(mesh):
 	mat.set_albedo(color)
 	# mat.flags_transparent = 1
 	$Mesh.set_material_override(mat)
-	# return
 
+
+
+	# gravity_scale = 0.1
+	# bounce = randf()
+	# set_axis_velocity(Vector3(randf()-0.5, randf()-0.5, randf()-0.5) / 2)
+	# apply_impulse(Vector3(0,0,0), Vector3(randf()-0.5, randf()-0.5, randf()-0.5))
+
+
+	# Create Collision Shape
 	var tool = global.MeshTool
 	tool.create_from_surface(mesh, 0)
 
@@ -52,12 +60,11 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func _on_HexRegion_mouse_entered():
-	print('Mouse here! ', id)
 	translate_object_local(Vector3(0,0,0.09))
-	pass # replace with function body
+	pass
+
 
 
 func _on_HexRegion_mouse_exited():
-	print('Mouse Out! ', id)
 	translate_object_local(Vector3(0,0,-0.09))
-	pass # replace with function body
+	pass

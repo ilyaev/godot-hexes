@@ -13,10 +13,10 @@ var hex_height = 2 * size
 var offset_y = hex_height * 3/4
 var outline_vertices = []
 var outline_triangles = []
-var surface = SurfaceTool.new()
 var regions_count = 40
 var region_hexes = {}
 var capitals = []
+var _hex_dict = {}
 
 var oddr_directions = [
     [[+1,  0], [ 0, -1], [-1, -1],
@@ -30,7 +30,7 @@ func _ready():
 	randomize()
 	global.start_profile()
 	build_hexes()
-	global.print_profile('Buld Hexes')
+	global.print_profile('Buld Hexes - ' + str(rows * cols))
 	create_voids()
 	global.print_profile('Create Voids')
 	plant_capitals()
@@ -40,6 +40,15 @@ func _ready():
 	build_regions()
 	global.print_profile('Build Regions')
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
+
+	cleanup()
+
+func cleanup():
+	_hex_dict.clear()
+	outline_vertices.clear()
+	outline_triangles.clear()
+	region_hexes.clear()
+	capitals.clear()
 
 func build_regions():
 	var regions = {}
@@ -54,16 +63,16 @@ func build_regions():
 				regions[hex.region_id].add_links(get_hex_links(hex))
 
 	for region_id in regions:
-		var region = regions[region_id]
+		if randf() > -1:
+			var region = regions[region_id]
+			var region_vertices = build_outline(region.hexes)
+			var region_triangles = build_shape(region_vertices)
+			var region_mesh = build_surface(region_vertices, region_triangles)
 
-		var region_vertices = build_outline(region.hexes)
-		var region_triangles = build_shape(region_vertices)
-		var region_mesh = build_surface(region_vertices, region_triangles)
+			regions[region_id].set_mesh(region_mesh)
+			regions[region_id].rotation_speed = region_id / 2
 
-		regions[region_id].set_mesh(region_mesh)
-		regions[region_id].rotation_speed = region_id / 2
-
-		$Regions.add_child(regions[region_id])
+			$Regions.add_child(regions[region_id])
 
 
 
@@ -110,8 +119,8 @@ func get_random_empty_hex():
 		if iteration > 1000:
 			break
 
-		var row = randi() % (rows - 4) + 2
-		var col = randi() % (cols - 4) + 2
+		var row = randi() % (rows - 2) + 1
+		var col = randi() % (cols - 2) + 1
 
 		hex = get_hex(row, col)
 
@@ -131,6 +140,8 @@ func _physics_process(delta):
 func build_surface(region_vertices = outline_vertices, region_triangles = outline_triangles):
 
 	var mesh = Mesh.new()
+
+	var surface = global.Surface
 
 	surface.clear()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -189,9 +200,12 @@ func get_hex(row, col):
 	return {"region_id": -1, "is_capital": false, "id": 0}
 
 func get_hex_by_hash(hash_value):
+	if _hex_dict.has(hash_value):
+		return _hex_dict[hash_value]
 	var childs = $Hexes.get_children()
 	for i in childs.size():
 		if childs[i].id == hash_value:
+			_hex_dict[hash_value] = childs[i]
 			return childs[i]
 	return {"region_id": -1, "is_capital": false, "id": 0}
 
