@@ -1,6 +1,7 @@
 extends Area
 
 var id = -1
+var original_id = -1
 var country_id = -1
 var links = []
 var hexes = []
@@ -68,3 +69,16 @@ func _on_HexRegion_mouse_entered():
 func _on_HexRegion_mouse_exited():
 	translate_object_local(Vector3(0,0,-0.09))
 	pass
+
+
+func get_reachability(map, region_id, result):
+	for link in map[region_id]:
+		if !result.has(link) and map.has(link):
+			result.push_back(link)
+			get_reachability(map, link, result)
+	return result
+
+func is_reachable(traverse_map):
+	var result = true
+	var traverse = get_reachability(traverse_map, id, [])
+	return traverse.size() == traverse_map.size()

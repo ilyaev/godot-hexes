@@ -24,6 +24,22 @@ func add_hexgrid(params):
 	params[0].wait_to_finish()
 
 func _input(event):
+
+	if event is InputEventKey:
+		if Input.is_key_pressed(KEY_H):
+			for region in Grid.get_node('Regions').get_children():
+				if region.id == -1:
+					if region.is_visible_in_tree():
+						region.hide()
+					else:
+						region.show()
+		if Input.is_key_pressed(KEY_R):
+			remove_child(Grid)
+			Grid = HexGrid_class.instance()
+			add_child(Grid)
+			print('RESTART')
+
+
 	if Input.is_key_pressed(KEY_SPACE):
 		if !free_look:
 			prev_mouse_position.x = 0

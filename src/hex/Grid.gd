@@ -2,9 +2,9 @@ extends Spatial
 
 var hex_class = preload("res://src/hex/Cell.tscn")
 var region_class = preload("res://src/hex/Region.tscn")
-var cols = 30
-var rows = 30
-var size = 0.06
+var cols = 40
+var rows = 32
+var size = 0.05
 var height = -0.1
 var vert_hex = {}
 var vertice_hash_map = {}
@@ -13,10 +13,12 @@ var hex_height = 2 * size
 var offset_y = hex_height * 3/4
 var outline_vertices = []
 var outline_triangles = []
-var regions_count = 40
+var regions_count = round(cols * rows / 23)
+var voids_count = round(regions_count * 0.4)
 var region_hexes = {}
 var capitals = []
 var _hex_dict = {}
+var traverse_map = {}
 
 var oddr_directions = [
     [[+1,  0], [ 0, -1], [-1, -1],
@@ -31,17 +33,46 @@ func _ready():
 	global.start_profile()
 	build_hexes()
 	global.print_profile('Buld Hexes - ' + str(rows * cols))
-	create_voids()
-	global.print_profile('Create Voids')
 	plant_capitals()
 	global.print_profile('Plant Capitals')
 	build_borders()
 	global.print_profile('Build Borders')
 	build_regions()
 	global.print_profile('Build Regions')
+	create_voids()
+	global.print_profile('Create Voids')
+
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
 
 	cleanup()
+
+func create_voids():
+	for n in range(voids_count):
+		var flag = true
+		while flag:
+			var target_region = $Regions.get_children()[randi() % $Regions.get_children().size()]
+
+			build_traverse_map(target_region.id)
+
+			var reachable = target_region.id >= 0
+
+			if reachable:
+				for region in $Regions.get_children():
+					if target_region.id != region.id and region.id >= 0 and !region.is_reachable(traverse_map):
+						reachable = false
+						break
+
+			if reachable:
+				# $Regions.remove_child(target_region)
+				target_region.hide()
+				target_region.original_id = target_region.id
+				target_region.id = -1
+				flag = false
+			else:
+				flag = true
+
+
+		pass
 
 func cleanup():
 	_hex_dict.clear()
@@ -54,7 +85,7 @@ func build_regions():
 	var regions = {}
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash([row,col].hash())
+			var hex = get_hex_by_hash(gen_hex_hash(row, col)) # [row,col,str(row) + str(col)].hash())
 			if hex.id:
 				if !regions.has(hex.region_id):
 					regions[hex.region_id] = region_class.instance()
@@ -75,10 +106,6 @@ func build_regions():
 			$Regions.add_child(regions[region_id])
 
 
-
-func create_voids():
-	pass
-
 func plant_capitals():
 	for i in range(regions_count):
 		var hex = get_random_empty_hex()
@@ -89,7 +116,7 @@ func plant_capitals():
 func build_borders():
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash([row,col].hash())
+			var hex = get_hex_by_hash(gen_hex_hash(row, col)) #[row,col,str(row) + str(col)].hash())
 			if hex.id and !hex.is_capital:
 				var capital
 				var max_distance = 100000
@@ -362,7 +389,7 @@ func build_hexes():
 				hex.col = col
 				hex.radius = size
 				hex.height = -size / 5
-				hex.id = [row,col].hash()
+				hex.id = gen_hex_hash(row, col) #[row,col,str(row) + str(col)].hash()
 
 				$Hexes.add_child(hex)
 				hex.hide()
@@ -409,7 +436,25 @@ func get_hex_links(src):
 	var dirs = oddr_directions[parity]
 	var result = []
 	for direction in dirs:
-		var hex = get_hex_by_hash([src.row + direction[0], src.col + direction[1]].hash())
+		var hex = get_hex_by_hash(gen_hex_hash(src.row + direction[0], src.col + direction[1]))
+
+		# get_hex_by_hash([
+		# 	src.row + direction[0],
+		# 	src.col + direction[1],
+		# 	str(src.row + direction[0]) + str(src.col + direction[1])
+		# ].hash())
+
 		if hex.id and hex.region_id != src.region_id and !result.has(hex.region_id):
 			result.push_back(hex.region_id)
 	return result
+
+func build_traverse_map(exclude_region_id = -1):
+	traverse_map.clear()
+	for region in $Regions.get_children():
+		if !traverse_map.has(region.id) and region.id != exclude_region_id and region.id >= 0:
+			traverse_map[region.id] = region.links
+
+
+func gen_hex_hash(row, col):
+	var result = str([row, col].hash()) + str(row) + str(col)
+	return int(result)
