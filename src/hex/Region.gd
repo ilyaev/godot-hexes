@@ -68,10 +68,6 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func _on_HexRegion_mouse_entered():
-	# if is_visible_in_tree():
-	# 	for hex in hexes:
-	# 		hex.show()
-	# 	print(id, links)
 	translate_object_local(Vector3(0,0,0.09))
 	pass
 

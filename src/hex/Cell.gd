@@ -19,6 +19,7 @@ var vert_hashes = []
 var id = 0
 var region_id = 0
 var is_capital = false
+var origin
 
 func _ready():
 	surface = global.Surface
@@ -105,19 +106,12 @@ func get_vertice_index_by_hash(hash_value):
 	return -1
 
 func add_offset(offset = Vector3(0,0,0)):
+	origin = offset
 	vert_hashes.resize(vertices.size())
 	for n in range(vertices.size()):
-		vertices[n] = round_vector(vertices[n] + offset, 3)
+		vertices[n] = global.round_vector(vertices[n] + offset, 3)
 		vert_hashes[n] = [vertices[n].x, vertices[n].y, vertices[n].z].hash()
-	translate(round_vector(offset, 3))
-
-func round_vector(val, precision = 3):
-	var result = Vector3(0,0,0)
-	var nom = pow(10, precision)
-	result.x = round(val.x * nom) / nom
-	result.y = round(val.y * nom) / nom
-	result.z = round(val.z * nom) / nom
-	return result
+	translate(global.round_vector(offset, 3))
 
 func populate(country, flag = false):
 	region_id = country

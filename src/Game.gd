@@ -14,6 +14,7 @@ func _ready():
 	add_child(Grid)
 	add_child(tween)
 	add_child(light_tween)
+	# $Camera.translate(Vector3(0,0, -1.5))
 	original_transform = $Camera.transform
 	# var thread = Thread.new()
 	# thread.start(self, 'add_hexgrid', [thread])
@@ -37,6 +38,14 @@ func _input(event):
 			remove_child(Grid)
 			Grid = HexGrid_class.instance()
 			add_child(Grid)
+
+		if Input.is_key_pressed(KEY_W):
+			tween.interpolate_property($Camera, 'transform', $Camera.transform, $Camera.transform.translated(Vector3(0,0,-0.3)), 0.2, Tween.TRANS_SINE, Tween.EASE_IN)
+			tween.start()
+
+		if Input.is_key_pressed(KEY_S):
+			tween.interpolate_property($Camera, 'transform', $Camera.transform, $Camera.transform.translated(Vector3(0,0,0.3)), 0.2, Tween.TRANS_SINE, Tween.EASE_IN)
+			tween.start()
 
 
 	if Input.is_key_pressed(KEY_SPACE):

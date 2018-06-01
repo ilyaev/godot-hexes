@@ -1,13 +1,14 @@
 extends Spatial
 
-var hex_class = preload("res://src/hex/Cell.tscn")
-var region_class = preload("res://src/hex/Region.tscn")
+var hex_class = preload("Cell.tscn")
+var region_class = preload("Region.tscn")
+var outline_class = preload("Outline.tscn")
 
 var cols = 40
 var rows = 32
 var regions_count = round(cols * rows / 23)
 var voids_count = round(regions_count * 0.3)
-var country_count = 3
+var country_count = 5
 
 var size = 0.05
 var height = -0.1
@@ -28,6 +29,13 @@ var oddr_directions = [
     [[+1,  0], [+1, -1], [ 0, -1],
      [-1,  0], [ 0, +1], [+1, +1]],
 ]
+
+var oddr_directions_alternate = [
+	[[0, -1],[1,0],[0,1],[-1,1],[-1,0],[-1,-1]],
+	[[1,-1],[1,0],[1,1],[0,1],[-1,0],[0,-1]]
+]
+
+var Outline
 
 var color_map = [
 	Color(0,0,0),
@@ -57,11 +65,63 @@ func _ready():
 	global.print_profile('Create Voids')
 	plant_countries()
 	global.print_profile('Plant Countries')
-
+	build_visual_outline()
+	global.print_profile('Build Outline')
+	cleanup()
+	global.print_profile('Cleanup')
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
 
-	cleanup()
 
+
+
+func build_visual_outline():
+	var coords = {
+		0: [],
+		1: [],
+		2: []
+	}
+
+	var radius = size
+
+	var step = 2 * PI / 6
+	var offset = 0
+	var shift = radius / 13
+
+	for n in range(6):
+		var sinx = sin(offset + step * n)
+		var cosy = cos(offset + step * n)
+		coords[0].push_back(Vector3(radius * sinx, radius * cosy, 0.0001))
+		coords[1].push_back(Vector3((radius + shift) * sinx, (radius + shift) * cosy, 0.001))
+		coords[2].push_back(Vector3((radius - shift) * sinx, (radius - shift) * cosy, 0.001))
+
+	Outline = outline_class.instance()
+
+	for region in $Regions.get_children():
+		var prev_index = -10
+		for hex in region.hexes:
+			var parity = hex.row & 1
+			var dirs = oddr_directions_alternate[parity]
+
+			for index in range(6):
+
+				var direction = dirs[index]
+				var target = get_hex_by_hash(gen_hex_hash(hex.row + direction[1], hex.col + direction[0]))
+
+				if target.region_id != hex.region_id and (target.region_id >= 0 or hex.region_id >= 0):
+					var next_index = index + 1
+					if next_index == 6:
+						next_index = 0
+					Outline.add_segment([
+						global.round_vector(coords[1][index] + hex.origin),
+						global.round_vector(coords[1][next_index] + hex.origin),
+						global.round_vector(coords[2][next_index] + hex.origin),
+						global.round_vector(coords[2][index] + hex.origin),
+					])
+					prev_index = index
+
+	add_child(Outline)
+
+	pass
 
 func plant_countries():
 	var pool = []
@@ -73,13 +133,14 @@ func plant_countries():
 		pool.push_back(n+1)
 
 	for region in $Regions.get_children():
-		region.set_country(pool[randi() % pool.size()])
-		region.set_color(color_map[region.country_id])
-		if !exist.has(region.country_id):
-			exist[region.country_id] = 0
-		exist[region.country_id] += 1
-		if exist[region.country_id] >= per_country:
-			pool.erase(region.country_id)
+		if region.id >= 0:
+			region.set_country(pool[randi() % pool.size()])
+			region.set_color(color_map[region.country_id])
+			if !exist.has(region.country_id):
+				exist[region.country_id] = 0
+			exist[region.country_id] += 1
+			if exist[region.country_id] >= per_country:
+				pool.erase(region.country_id)
 
 	pass
 
@@ -99,16 +160,18 @@ func create_voids():
 
 			if reachable:
 				for region in $Regions.get_children():
-					if target_region.id != region.id and region.id >= 0 and !region.is_reachable(traverse_map):
+					if target_region.id != region.id and region.id >= 0 and target_region.id >=0 and !region.is_reachable(traverse_map):
 						reachable = false
 						break
 
 			if reachable:
-				$Regions.remove_child(target_region)
+				# $Regions.remove_child(target_region)
 				target_region.hide()
 				target_region.original_id = target_region.id
 				target_region.id = -1
-				target_region.queue_free()
+				for rhex in target_region.hexes:
+					rhex.region_id = -1
+				# target_region.queue_free()
 				flag = false
 				regions_count -= 1
 			else:
@@ -123,6 +186,12 @@ func cleanup():
 	outline_triangles.clear()
 	region_hexes.clear()
 	capitals.clear()
+
+	for region in $Regions.get_children():
+		if region.id < 0:
+			for hex in region.hexes:
+				hex.queue_free()
+			region.queue_free()
 
 func build_regions():
 	var regions = {}
