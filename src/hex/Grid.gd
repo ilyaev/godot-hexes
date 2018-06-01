@@ -21,19 +21,7 @@ var outline_vertices = []
 var outline_triangles = []
 var region_hexes = {}
 var capitals = []
-var _hex_dict = {}
 var traverse_map = {}
-var oddr_directions = [
-    [[+1,  0], [ 0, -1], [-1, -1],
-     [-1,  0], [-1, +1], [ 0, +1]],
-    [[+1,  0], [+1, -1], [ 0, -1],
-     [-1,  0], [ 0, +1], [+1, +1]],
-]
-
-var oddr_directions_alternate = [
-	[[0, -1],[1,0],[0,1],[-1,1],[-1,0],[-1,-1]],
-	[[1,-1],[1,0],[1,1],[0,1],[-1,0],[0,-1]]
-]
 
 var Outline
 var Cells
@@ -55,7 +43,7 @@ func _ready():
 	randomize()
 	global.start_profile()
 	build_hexes()
-	global.print_profile('Buld Hexes - ' + str(rows * cols))
+	global.print_profile('Buld Hexes')
 	plant_capitals()
 	global.print_profile('Plant Capitals')
 	build_borders()
@@ -100,12 +88,12 @@ func build_visual_outline():
 	for region in $Regions.get_children():
 		for hex in region.hexes:
 			var parity = hex.row & 1
-			var dirs = oddr_directions_alternate[parity]
+			var dirs = Cells.oddr_directions_alternate[parity]
 
 			for index in range(6):
 
 				var direction = dirs[index]
-				var target = get_hex_by_hash(gen_hex_hash(hex.row + direction[1], hex.col + direction[0]))
+				var target = Cells.get_hex(hex.row + direction[1], hex.col + direction[0])
 
 				if target.region_id != hex.region_id and (target.region_id >= 0 or hex.region_id >= 0):
 					var next_index = index + 1
@@ -176,7 +164,6 @@ func create_voids():
 		pass
 
 func cleanup():
-	_hex_dict.clear()
 	outline_vertices.clear()
 	outline_triangles.clear()
 	region_hexes.clear()
@@ -190,7 +177,7 @@ func build_regions():
 	var regions = {}
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash(gen_hex_hash(row, col))
+			var hex = Cells.get_hex(row, col)
 			if hex.id:
 				if !regions.has(hex.region_id):
 					regions[hex.region_id] = region_class.instance()
@@ -208,7 +195,8 @@ func build_regions():
 			regions[region_id].set_mesh(region_mesh)
 			regions[region_id].rotation_speed = region_id / 2
 
-			$Regions.add_child(regions[region_id])
+	for region_id in regions:
+		$Regions.add_child(regions[region_id])
 
 
 func plant_capitals():
@@ -221,7 +209,7 @@ func plant_capitals():
 func build_borders():
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash(gen_hex_hash(row, col))
+			var hex = Cells.get_hex(row, col)
 			if hex.id and !hex.is_capital:
 				var capital
 				var max_distance = 100000
@@ -253,7 +241,7 @@ func get_random_empty_hex():
 		var row = randi() % (rows - 2) + 1
 		var col = randi() % (cols - 2) + 1
 
-		hex = get_hex(row, col)
+		hex = Cells.get_hex(row, col)
 
 		if hex.id and hex.region_id == 0 and !hex.is_capital:
 			flag = false
@@ -323,23 +311,6 @@ func get_next_hex(hash_value, hexes):
 			return hexes[i]
 	return hash_value
 
-func get_hex(row, col):
-	var childs = Cells.hexes
-	for i in childs.size():
-		if childs[i].row == row and childs[i].col == col:
-			return childs[i]
-	return {"region_id": -1, "is_capital": false, "id": 0}
-
-func get_hex_by_hash(hash_value):
-	if _hex_dict.has(hash_value):
-		return _hex_dict[hash_value]
-	var childs = Cells.hexes
-	for i in childs.size():
-		if childs[i].id == hash_value:
-			_hex_dict[hash_value] = childs[i]
-			return childs[i]
-	return {"region_id": -1, "is_capital": false, "id": 0}
-
 func build_outline(hexes = Cells.hexes):
 	var index = 0
 	var hex = hexes[index]
@@ -352,7 +323,7 @@ func build_outline(hexes = Cells.hexes):
 
 		var vertex_hex_adjusted = []
 		for v_hash in vert_hex[vertex_hash]:
-			if get_hex_by_hash(v_hash).region_id == hex.region_id:
+			if Cells.get_hex_by_hash(v_hash).region_id == hex.region_id:
 				vertex_hex_adjusted.push_back(v_hash)
 
 		var hexes_per_vertex = vertex_hex_adjusted.size()
@@ -362,7 +333,7 @@ func build_outline(hexes = Cells.hexes):
 			vertex_hash = hex.vert_hashes[index]
 		elif hexes_per_vertex == 2:
 			all_vertices.append(hex.vertices[index])
-			hex = get_hex_by_hash(get_next_hex(hex.id, vertex_hex_adjusted))
+			hex = Cells.get_hex_by_hash(get_next_hex(hex.id, vertex_hex_adjusted))
 			index = get_next_index(Cells.get_vertice_index_by_hash(hex, vertex_hash))
 			vertex_hash = hex.vert_hashes[index]
 
@@ -531,11 +502,11 @@ func calc_b_side(x1, y1, x2, y2, x, y):
 
 func get_hex_links(src):
 	var parity = src.row & 1
-	var dirs = oddr_directions[parity]
+	var dirs = Cells.oddr_directions[parity]
 	var result = []
 
 	for direction in dirs:
-		var hex = get_hex_by_hash(gen_hex_hash(src.row + direction[0], src.col + direction[1]))
+		var hex = Cells.get_hex(src.row + direction[0], src.col + direction[1])
 		if hex.id and hex.region_id != src.region_id and !result.has(hex.region_id):
 			result.push_back(hex.region_id)
 
