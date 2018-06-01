@@ -1,14 +1,14 @@
 extends Spatial
 
-var hex_class = preload("Cell.tscn")
 var region_class = preload("Region.tscn")
 var outline_class = preload("Outline.tscn")
+var cells_class = preload('Cells.gd')
 
 var cols = 40
 var rows = 32
 var regions_count = round(cols * rows / 23)
 var voids_count = round(regions_count * 0.3)
-var country_count = 5
+var country_count = 3
 
 var size = 0.05
 var height = -0.1
@@ -36,6 +36,7 @@ var oddr_directions_alternate = [
 ]
 
 var Outline
+var Cells
 
 var color_map = [
 	Color(0,0,0),
@@ -97,7 +98,6 @@ func build_visual_outline():
 	Outline = outline_class.instance()
 
 	for region in $Regions.get_children():
-		var prev_index = -10
 		for hex in region.hexes:
 			var parity = hex.row & 1
 			var dirs = oddr_directions_alternate[parity]
@@ -117,11 +117,8 @@ func build_visual_outline():
 						global.round_vector(coords[2][next_index] + hex.origin),
 						global.round_vector(coords[2][index] + hex.origin),
 					])
-					prev_index = index
 
 	add_child(Outline)
-
-	pass
 
 func plant_countries():
 	var pool = []
@@ -165,13 +162,11 @@ func create_voids():
 						break
 
 			if reachable:
-				# $Regions.remove_child(target_region)
 				target_region.hide()
 				target_region.original_id = target_region.id
 				target_region.id = -1
 				for rhex in target_region.hexes:
 					rhex.region_id = -1
-				# target_region.queue_free()
 				flag = false
 				regions_count -= 1
 			else:
@@ -189,15 +184,13 @@ func cleanup():
 
 	for region in $Regions.get_children():
 		if region.id < 0:
-			for hex in region.hexes:
-				hex.queue_free()
 			region.queue_free()
 
 func build_regions():
 	var regions = {}
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash(gen_hex_hash(row, col)) # [row,col,str(row) + str(col)].hash())
+			var hex = get_hex_by_hash(gen_hex_hash(row, col))
 			if hex.id:
 				if !regions.has(hex.region_id):
 					regions[hex.region_id] = region_class.instance()
@@ -221,25 +214,24 @@ func build_regions():
 func plant_capitals():
 	for i in range(regions_count):
 		var hex = get_random_empty_hex()
-		hex.populate(i + 1, true)
+		Cells.populate(hex, i + 1, true)
 		capitals.push_back(hex)
 	pass
 
 func build_borders():
 	for row in range(rows):
 		for col in range(cols):
-			var hex = get_hex_by_hash(gen_hex_hash(row, col)) #[row,col,str(row) + str(col)].hash())
+			var hex = get_hex_by_hash(gen_hex_hash(row, col))
 			if hex.id and !hex.is_capital:
 				var capital
 				var max_distance = 100000
 				for capital_hex in capitals:
-					var distance = capital_hex.distance_to(hex)
+					var distance = Cells.distance_to(capital_hex, hex)
 					if distance < max_distance:
 						max_distance = distance
 						capital = capital_hex
 
-				hex.populate(capital.region_id)
-				hex.mat.set_albedo(capital.mat.get_albedo() * 1.1)
+				Cells.populate(hex, capital.region_id)
 
 				if !region_hexes.has(capital.region_id):
 					region_hexes[capital.region_id] = []
@@ -266,7 +258,7 @@ func get_random_empty_hex():
 		if hex.id and hex.region_id == 0 and !hex.is_capital:
 			flag = false
 			for capital_hex in capitals:
-				if capital_hex.distance_to(hex) <= 3 :
+				if Cells.distance_to(capital_hex, hex) <= 3 :
 					flag = true
 
 	return hex
@@ -332,7 +324,7 @@ func get_next_hex(hash_value, hexes):
 	return hash_value
 
 func get_hex(row, col):
-	var childs = $Hexes.get_children()
+	var childs = Cells.hexes
 	for i in childs.size():
 		if childs[i].row == row and childs[i].col == col:
 			return childs[i]
@@ -341,14 +333,14 @@ func get_hex(row, col):
 func get_hex_by_hash(hash_value):
 	if _hex_dict.has(hash_value):
 		return _hex_dict[hash_value]
-	var childs = $Hexes.get_children()
+	var childs = Cells.hexes
 	for i in childs.size():
 		if childs[i].id == hash_value:
 			_hex_dict[hash_value] = childs[i]
 			return childs[i]
 	return {"region_id": -1, "is_capital": false, "id": 0}
 
-func build_outline(hexes = $Hexes.get_children()):
+func build_outline(hexes = Cells.hexes):
 	var index = 0
 	var hex = hexes[index]
 	var vertex_hash = hex.vert_hashes[index]
@@ -371,7 +363,7 @@ func build_outline(hexes = $Hexes.get_children()):
 		elif hexes_per_vertex == 2:
 			all_vertices.append(hex.vertices[index])
 			hex = get_hex_by_hash(get_next_hex(hex.id, vertex_hex_adjusted))
-			index = get_next_index(hex.get_vertice_index_by_hash(vertex_hash))
+			index = get_next_index(Cells.get_vertice_index_by_hash(hex, vertex_hash))
 			vertex_hash = hex.vert_hashes[index]
 
 		if vertex_hash == first_hash:
@@ -488,27 +480,21 @@ func is_triangle_ear(points, reflexes):
 
 
 func build_hexes():
+
+	Cells = cells_class.new()
+	Cells.radius = size
+
 	for row in range(rows):
 		var row_offset = 0
 		if row % 2 != 0:
 			row_offset = hex_width / 2
 		for col in range(cols):
-			if randi() % 20 > -1:
-				var hex = hex_class.instance()
-				var offset = Vector3(row_offset + hex_width * col, -1 * row * offset_y, 0)
-
-				hex.row = row
-				hex.col = col
-				hex.radius = size
-				hex.height = -size / 5
-				hex.id = gen_hex_hash(row, col) #[row,col,str(row) + str(col)].hash()
-
-				$Hexes.add_child(hex)
-				hex.hide()
-
-				hex.add_offset(offset)
-
-				add_vertices_to_map(hex.vertices, hex.id)
+			var hex = Cells.add_hex(
+				row,
+				col,
+				Vector3(row_offset + hex_width * col, -1 * row * offset_y, 0)
+			)
+			add_vertices_to_map(hex.vertices, hex.id)
 
 func add_vertices_to_map(items, id):
 	for n in items.size():
@@ -563,5 +549,4 @@ func build_traverse_map(exclude_region_id = -1):
 
 
 func gen_hex_hash(row, col):
-	var result = str([row, col].hash()) + str(row) + str(col)
-	return int(result)
+	return Cells.gen_hex_hash(row, col)

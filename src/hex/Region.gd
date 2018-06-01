@@ -8,8 +8,13 @@ var hexes = []
 var mat = SpatialMaterial.new()
 var rotation_speed = 0
 var color
+var current_transform
+var original_transform
+var selection_shift = 0.1
 
 func _ready():
+	current_transform = transform
+	original_transform = transform
 	pass
 
 func set_country(country):
@@ -68,13 +73,33 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func _on_HexRegion_mouse_entered():
-	translate_object_local(Vector3(0,0,0.09))
+	$Tween.interpolate_property(
+		self,
+		'transform',
+		transform,
+		current_transform.translated(Vector3(0, 0, selection_shift)),
+		0.2,
+		Tween.TRANS_EXPO,
+		Tween.EASE_OUT
+	)
+	current_transform = current_transform.translated(Vector3(0,0,selection_shift))
+	$Tween.start()
 	pass
 
 
 
 func _on_HexRegion_mouse_exited():
-	translate_object_local(Vector3(0,0,-0.09))
+	$Tween.interpolate_property(
+		self,
+		'transform',
+		transform,
+		current_transform.translated(Vector3(0, 0, -selection_shift)),
+		0.2,
+		Tween.TRANS_SINE,
+		Tween.EASE_IN
+	)
+	current_transform = current_transform.translated(Vector3(0, 0, -selection_shift))
+	$Tween.start()
 	pass
 
 

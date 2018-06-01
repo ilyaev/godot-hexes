@@ -8,6 +8,4 @@ script = ExtResource( 1 )
 
 [node name="Regions" type="Spatial" parent="." index="0"]
 
-[node name="Hexes" type="Spatial" parent="." index="1"]
-
 
