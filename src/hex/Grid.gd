@@ -2,8 +2,13 @@ extends Spatial
 
 var hex_class = preload("res://src/hex/Cell.tscn")
 var region_class = preload("res://src/hex/Region.tscn")
+
 var cols = 40
 var rows = 32
+var regions_count = round(cols * rows / 23)
+var voids_count = round(regions_count * 0.3)
+var country_count = 3
+
 var size = 0.05
 var height = -0.1
 var vert_hex = {}
@@ -13,18 +18,27 @@ var hex_height = 2 * size
 var offset_y = hex_height * 3/4
 var outline_vertices = []
 var outline_triangles = []
-var regions_count = round(cols * rows / 23)
-var voids_count = round(regions_count * 0.4)
 var region_hexes = {}
 var capitals = []
 var _hex_dict = {}
 var traverse_map = {}
-
 var oddr_directions = [
     [[+1,  0], [ 0, -1], [-1, -1],
      [-1,  0], [-1, +1], [ 0, +1]],
     [[+1,  0], [+1, -1], [ 0, -1],
      [-1,  0], [ 0, +1], [+1, +1]],
+]
+
+var color_map = [
+	Color(0,0,0),
+	Color("#b3ff01"),
+	Color("#b37ffe"),
+	Color("#009302"),
+	Color("#ff7ffe"),
+	Color("#ff7f02"),
+	Color("#b2fffe"),
+	Color("#ffff02"),
+	Color("#ff5858")
 ]
 
 
@@ -41,12 +55,39 @@ func _ready():
 	global.print_profile('Build Regions')
 	create_voids()
 	global.print_profile('Create Voids')
+	plant_countries()
+	global.print_profile('Plant Countries')
 
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
 
 	cleanup()
 
+
+func plant_countries():
+	var pool = []
+	var exist = {}
+
+	var per_country = ceil(regions_count / country_count)
+
+	for n in range(country_count):
+		pool.push_back(n+1)
+
+	for region in $Regions.get_children():
+		region.set_country(pool[randi() % pool.size()])
+		region.set_color(color_map[region.country_id])
+		if !exist.has(region.country_id):
+			exist[region.country_id] = 0
+		exist[region.country_id] += 1
+		if exist[region.country_id] >= per_country:
+			pool.erase(region.country_id)
+
+	pass
+
 func create_voids():
+
+	var per_country = ceil((regions_count - voids_count) / country_count)
+	voids_count = regions_count - per_country * country_count
+
 	for n in range(voids_count):
 		var flag = true
 		while flag:
@@ -63,11 +104,13 @@ func create_voids():
 						break
 
 			if reachable:
-				# $Regions.remove_child(target_region)
+				$Regions.remove_child(target_region)
 				target_region.hide()
 				target_region.original_id = target_region.id
 				target_region.id = -1
+				target_region.queue_free()
 				flag = false
+				regions_count -= 1
 			else:
 				flag = true
 
@@ -435,17 +478,12 @@ func get_hex_links(src):
 	var parity = src.row & 1
 	var dirs = oddr_directions[parity]
 	var result = []
+
 	for direction in dirs:
 		var hex = get_hex_by_hash(gen_hex_hash(src.row + direction[0], src.col + direction[1]))
-
-		# get_hex_by_hash([
-		# 	src.row + direction[0],
-		# 	src.col + direction[1],
-		# 	str(src.row + direction[0]) + str(src.col + direction[1])
-		# ].hash())
-
 		if hex.id and hex.region_id != src.region_id and !result.has(hex.region_id):
 			result.push_back(hex.region_id)
+
 	return result
 
 func build_traverse_map(exclude_region_id = -1):

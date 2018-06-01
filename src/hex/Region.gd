@@ -12,6 +12,13 @@ var color
 func _ready():
 	pass
 
+func set_country(country):
+	country_id = country
+
+func set_color(new_color):
+	color = new_color
+	mat.set_albedo(color)
+
 func add_links(new_links):
 	for link in new_links:
 		if !links.has(link):
@@ -61,6 +68,10 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func _on_HexRegion_mouse_entered():
+	# if is_visible_in_tree():
+	# 	for hex in hexes:
+	# 		hex.show()
+	# 	print(id, links)
 	translate_object_local(Vector3(0,0,0.09))
 	pass
 

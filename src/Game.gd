@@ -37,7 +37,6 @@ func _input(event):
 			remove_child(Grid)
 			Grid = HexGrid_class.instance()
 			add_child(Grid)
-			print('RESTART')
 
 
 	if Input.is_key_pressed(KEY_SPACE):
@@ -46,11 +45,8 @@ func _input(event):
 		free_look = true
 	else:
 		if free_look:
-			# $DirectionalLight.transform = original_transform
-
-			light_tween.interpolate_property($DirectionalLight, 'transform', $DirectionalLight.transform, original_transform, 0.6, Tween.TRANS_SINE, Tween.EASE_IN)
+			light_tween.interpolate_property($DirectionalLight, 'transform', $DirectionalLight.transform, original_transform, 0.6, Tween.TRANS_EXPO, Tween.EASE_IN_OUT)
 			light_tween.start()
-
 			tween.interpolate_property($Camera, 'transform', $Camera.transform, original_transform, 0.5, Tween.TRANS_SINE, Tween.EASE_IN)
 			tween.start()
 

@@ -37,7 +37,7 @@ func calculate_coordinates():
 	pos = Vector3(x, y, z)
 
 func _physics_process(delta):
-	# rotate_y(delta * PI)
+	rotate_y(delta * PI)
 	# rotate_x(delta * PI * speed)
 	# rotate_z(delta * PI * speed)
 	# show()
