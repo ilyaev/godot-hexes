@@ -2,7 +2,7 @@
 
 [ext_resource path="res://src/hex/Region.gd" type="Script" id=1]
 
-[node name="HexRegion" type="Area" index="0"]
+[node name="HexRegion" type="Area"]
 
 input_ray_pickable = false
 input_capture_on_drag = false
@@ -13,7 +13,7 @@ gravity_vec = Vector3( 0, -1, 0 )
 gravity = 9.8
 linear_damp = 0.1
 angular_damp = 1.0
-priority = 0.0
+priority = 2.0
 monitoring = true
 monitorable = true
 collision_layer = 1
@@ -54,6 +54,8 @@ playback_speed = 1.0
 playback/active = false
 playback/repeat = false
 playback/speed = 1.0
+
+[connection signal="input_event" from="." to="." method="_on_HexRegion_input_event"]
 
 [connection signal="mouse_entered" from="." to="." method="_on_HexRegion_mouse_entered"]
 

@@ -25,6 +25,7 @@ reverb_bus_name = "Master"
 reverb_bus_amount = 0.0
 reverb_bus_uniformity = 0.0
 script = ExtResource( 1 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="Mesh" type="MeshInstance" parent="." index="0"]
 

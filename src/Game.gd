@@ -7,22 +7,25 @@ var original_transform
 var free_look = false
 var tween = Tween.new()
 var light_tween = Tween.new()
+var sp_transform
 
 func _ready():
-	Grid = HexGrid_class.instance()
+	randomize()
 
+	sp_transform = $Sphere.transform
+
+	Grid = HexGrid_class.instance()
+	Grid.build_all()
 	add_child(Grid)
+
 	add_child(tween)
 	add_child(light_tween)
-	# $Camera.translate(Vector3(0,0, -1.5))
+
 	original_transform = $Camera.transform
-	# var thread = Thread.new()
-	# thread.start(self, 'add_hexgrid', [thread])
+
 	pass
 
-func add_hexgrid(params):
-	add_child(Grid)
-	params[0].wait_to_finish()
+
 
 func _input(event):
 
@@ -37,6 +40,7 @@ func _input(event):
 		if Input.is_key_pressed(KEY_R):
 			remove_child(Grid)
 			Grid = HexGrid_class.instance()
+			Grid.build_all()
 			add_child(Grid)
 
 		if Input.is_key_pressed(KEY_W):
@@ -54,8 +58,6 @@ func _input(event):
 		free_look = true
 	else:
 		if free_look:
-			light_tween.interpolate_property($DirectionalLight, 'transform', $DirectionalLight.transform, original_transform, 0.6, Tween.TRANS_EXPO, Tween.EASE_IN_OUT)
-			light_tween.start()
 			tween.interpolate_property($Camera, 'transform', $Camera.transform, original_transform, 0.5, Tween.TRANS_SINE, Tween.EASE_IN)
 			tween.start()
 
@@ -67,4 +69,29 @@ func _input(event):
 			prev_mouse_position = event.position
 		var diff = event.position - prev_mouse_position
 		$Camera.transform = original_transform.rotated(Vector3(0,1,0), PI / 2 * diff.x / 300).rotated(Vector3(1,0,0), PI / 2 * diff.y / 300)
-		$DirectionalLight.transform = $Camera.transform
+
+	if event is InputEventMouseMotion:
+		# var screen_rect = get_viewport().get_visible_rect()
+		# var start = Vector2(screen_rect.position)
+		# var end = Vector2(screen_rect.size)
+		# var coords = $Camera.project_position(event.position)
+
+		# var factor = 35
+
+		# $Camera/Sphere.transform = sp_transform.translated(Vector3(coords.x,coords.y,0) * factor)
+
+		# var pos = $Camera/Sphere.get_translation() + $Camera.get_translation()
+		# var spos = $Camera.unproject_position(pos)
+		# print(pos, spos, coords, $Camera.near, ', ', $Camera.far,', ', $Camera.projection, ', ', $Camera.fov)
+
+
+		var mouse_pos = event.position
+		var space_state = get_world().get_direct_space_state()
+		var from = $Camera.project_ray_origin(mouse_pos)
+		var to = from + $Camera.project_ray_normal(mouse_pos) * 10000
+
+		var result = space_state.intersect_ray( from, to )
+		if result:
+			$Sphere.transform = sp_transform.translated(Vector3(result.position.x, result.position.y, result.position.z + 0.01))
+			global.update_mouse_position(result.position, $Camera.unproject_position(result.position))
+

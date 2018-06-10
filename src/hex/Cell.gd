@@ -20,6 +20,7 @@ var id = 0
 var region_id = 0
 var is_capital = false
 var origin
+var density = 6
 
 func _ready():
 	surface = global.Surface
@@ -48,7 +49,13 @@ func build_material():
 	mat.set_albedo(Color(0,max(0.5,randf()),0,1))
 
 
-func build_shape(density = 6):
+func get_vertex(index, size):
+	var step = 2 * PI / density
+	var x = sin(step * index) * size
+	var y = cos(step * index) * size
+	return Vector3(x, y, 0)
+
+func build_shape():
 	if mesh.get_surface_count() > 0:
 		mesh.surface_remove(0)
 	surface.clear()
@@ -64,8 +71,13 @@ func build_shape(density = 6):
 	offset = 0
 
 	for n in range(density):
-		var x = radius * sin(offset + step * n)
-		var y = radius * cos(offset + step * n)
+		var size = radius
+		# if (n > 1 and n < 5) and size > 0.2:
+		if n > 0 and size > 0.2:
+			size = 0.2
+		var x = size * sin(offset + step * n)
+		var y = size * cos(offset + step * n)
+
 		verts[n] = Vector3(x,y,0)
 		verts2[n] = verts[n] + Vector3(0,0,height)
 
@@ -74,6 +86,7 @@ func build_shape(density = 6):
 		surface.add_vertex(verts[n + 1])
 		surface.add_vertex(verts[n + 2])
 
+	for n in range(density - 2):
 		surface.add_vertex(verts2[0])
 		surface.add_vertex(verts2[density - n - 1])
 		surface.add_vertex(verts2[density - n - 2])
@@ -122,3 +135,23 @@ func populate(country, flag = false):
 func distance_to(hex):
 	var result = (abs(hex.x - x) + abs(hex.y - y) + abs(hex.z - z)) / 2
 	return result
+
+func update_size(new_size):
+	radius = new_size
+	build_shape()
+	mat.set_albedo(Color(0, 0, 0, min(1, max(0, 1 - new_size / 10))))
+	mat.flags_transparent = 1
+	# return
+	# var tool = global.MeshTool
+	# print(radius, ', ', new_size)
+	# tool.create_from_surface(mesh, 0)
+	# for f in range(tool.get_face_count()):
+	# 	if f < 10:
+	# 		print('F: ', f, ' - ', tool.get_face_vertex(f, 0), ',',tool.get_face_vertex(f, 1), ',',tool.get_face_vertex(f, 2))
+	# for n in [0,1,2,3,4]:
+	# 	tool.set_vertex(n, get_vertex(n, new_size))
+
+	# for s in range(mesh.get_surface_count()):
+	# 	mesh.surface_remove(s)
+
+	# tool.commit_to_surface(mesh)

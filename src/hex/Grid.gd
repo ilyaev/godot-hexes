@@ -40,10 +40,14 @@ var color_map = [
 
 
 func _ready():
-	randomize()
+	pass
+
+func build_all():
 	global.start_profile()
 	build_hexes()
 	global.print_profile('Buld Hexes')
+	plant_rivers()
+	global.print_profile('Plant Rivers')
 	plant_capitals()
 	global.print_profile('Plant Capitals')
 	build_borders()
@@ -60,7 +64,10 @@ func _ready():
 	global.print_profile('Cleanup')
 	translate_object_local(Vector3(-cols * hex_width / 2, rows * offset_y / 2, 0))
 
-
+func plant_rivers():
+	for n in range(10):
+		pass
+	pass
 
 
 func build_visual_outline():
@@ -144,7 +151,9 @@ func create_voids():
 			var reachable = target_region.id >= 0
 
 			if reachable:
-				for region in $Regions.get_children():
+				# for region in $Regions.get_children():
+				for region_id in target_region.links:
+					var region = get_region(region_id)
 					if target_region.id != region.id and region.id >= 0 and target_region.id >=0 and !region.is_reachable(traverse_map):
 						reachable = false
 						break
@@ -521,3 +530,9 @@ func build_traverse_map(exclude_region_id = -1):
 
 func gen_hex_hash(row, col):
 	return Cells.gen_hex_hash(row, col)
+
+func get_region(region_id):
+	for region in $Regions.get_children():
+		if region.id == region_id:
+			return region
+	return {"id": -1}

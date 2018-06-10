@@ -88,3 +88,8 @@ func get_hex_by_hash(hash_value):
     if _hex_dict.has(hash_value):
         return _hex_dict[hash_value]
     return {"region_id": -1, "is_capital": false, "id": 0}
+
+
+func erase_cell(row, col):
+    var hex = get_hex(row, col)
+    hex.region_id = -2

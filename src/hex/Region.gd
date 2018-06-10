@@ -11,6 +11,8 @@ var color
 var current_transform
 var original_transform
 var selection_shift = 0.1
+var capital
+var selected = false
 
 func _ready():
 	current_transform = transform
@@ -31,21 +33,14 @@ func add_links(new_links):
 
 func add_hex(hex):
 	hexes.push_back(hex)
+	if hex.is_capital:
+		capital = hex
 
 func set_mesh(mesh):
 	color = Color(max(0.1,randf()),max(0.1,randf()),max(0.1,randf()),1)
 	$Mesh.set_mesh(mesh)
 	mat.set_albedo(color)
-	# mat.flags_transparent = 1
 	$Mesh.set_material_override(mat)
-
-
-
-	# gravity_scale = 0.1
-	# bounce = randf()
-	# set_axis_velocity(Vector3(randf()-0.5, randf()-0.5, randf()-0.5) / 2)
-	# apply_impulse(Vector3(0,0,0), Vector3(randf()-0.5, randf()-0.5, randf()-0.5))
-
 
 	# Create Collision Shape
 	var tool = global.MeshTool
@@ -114,3 +109,9 @@ func is_reachable(traverse_map):
 	var result = true
 	var traverse = get_reachability(traverse_map, id, [])
 	return traverse.size() == traverse_map.size()
+
+func _on_HexRegion_input_event(camera, event, click_position, click_normal, shape_idx):
+	if event.is_pressed():
+		selected = !selected
+		global.emit_signal("region_clicked", self, click_position)
+	pass # replace with function body
