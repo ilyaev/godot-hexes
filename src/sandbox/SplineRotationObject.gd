@@ -4,6 +4,7 @@ var dummy_class = preload('Dummy.tscn')
 var arrow_class = preload('../spatial/arrow.tscn')
 var curve = Curve2D.new()
 var target_picked = false
+var center_picked = false
 var original_transform
 var pointer
 
@@ -119,3 +120,28 @@ func _input(event):
 			# arrow()
 			pointer.target_pos = result.position
 
+	if event is InputEventMouseButton and !event.is_pressed() and center_picked:
+		center_picked = false
+		$Center/Shape.disabled = false
+
+	if event is InputEventMouseMotion and center_picked:
+		var mouse_pos = event.position
+		var space_state = get_world().get_direct_space_state()
+		var from = $Camera.project_ray_origin(mouse_pos)
+		var to = from + $Camera.project_ray_normal(mouse_pos) * 10000
+
+		var result = space_state.intersect_ray( from, to )
+		if result:
+			$Center.transform = original_transform.translated(Vector3(result.position.x, result.position.y, 0))
+			# arrow()
+			pointer.start_pos = result.position
+			pointer.build()
+
+
+
+func _on_Center_input_event(camera, event, click_position, click_normal, shape_idx):
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			center_picked = !center_picked
+			if center_picked:
+				$Center/Shape.disabled = true

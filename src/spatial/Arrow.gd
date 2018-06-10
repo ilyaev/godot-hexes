@@ -2,29 +2,37 @@ extends Spatial
 
 # public
 
-var start_pos
-var base_width = 0.5
+var start_pos = Vector3(0,0,0)
+var base_width = 0.3
 var head_width = 0.3
-var target_pos = Vector3(0,0,0) setget set_target_pos, get_target_pos
+var target_pos = Vector3(0,0.8,0) setget set_target_pos, get_target_pos
 var color = Color('#ff0000') setget set_color, get_color
-var z = 0
+var z = 0.11
 var base_angle = 0 setget set_base_angle, get_base_angle
 var current_fixed_angle = 0
 
 # private
 
 var angle_step = PI / 4
-var density = 10
+var density = 8
 var curve = Curve2D.new()
 var mesh = Mesh.new()
 var mat = SpatialMaterial.new()
 var surface = global.Surface
 
+var original_translation
+
 
 func _ready():
+	hide()
+	original_translation = translation
 	mat.set_albedo(Color('#ff0000'))
 	$Mesh.set_material_override(mat)
 	$Mesh.set_mesh(mesh)
+	build()
+
+func relocate(pos):
+	translation = pos
 	build()
 
 func set_base_angle(new_angle):

@@ -23,9 +23,15 @@ func _ready():
 
 	original_transform = $Camera.transform
 
+	global.connect('region_clicked', self, 'on_region_clicked')
+
 	pass
 
-
+func on_region_clicked(region, position):
+	$Arrow.relocate(region.capital.origin + Grid.translation)
+	$Arrow.target_pos = position - $Arrow.translation
+	$Arrow.build()
+	$Arrow.show()
 
 func _input(event):
 
@@ -71,20 +77,6 @@ func _input(event):
 		$Camera.transform = original_transform.rotated(Vector3(0,1,0), PI / 2 * diff.x / 300).rotated(Vector3(1,0,0), PI / 2 * diff.y / 300)
 
 	if event is InputEventMouseMotion:
-		# var screen_rect = get_viewport().get_visible_rect()
-		# var start = Vector2(screen_rect.position)
-		# var end = Vector2(screen_rect.size)
-		# var coords = $Camera.project_position(event.position)
-
-		# var factor = 35
-
-		# $Camera/Sphere.transform = sp_transform.translated(Vector3(coords.x,coords.y,0) * factor)
-
-		# var pos = $Camera/Sphere.get_translation() + $Camera.get_translation()
-		# var spos = $Camera.unproject_position(pos)
-		# print(pos, spos, coords, $Camera.near, ', ', $Camera.far,', ', $Camera.projection, ', ', $Camera.fov)
-
-
 		var mouse_pos = event.position
 		var space_state = get_world().get_direct_space_state()
 		var from = $Camera.project_ray_origin(mouse_pos)
@@ -94,4 +86,5 @@ func _input(event):
 		if result:
 			$Sphere.transform = sp_transform.translated(Vector3(result.position.x, result.position.y, result.position.z + 0.01))
 			global.update_mouse_position(result.position, $Camera.unproject_position(result.position))
+			$Arrow.target_pos = result.position - $Arrow.translation
 

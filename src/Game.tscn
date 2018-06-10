@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/Game.gd" type="Script" id=1]
-[ext_resource path="res://src/selection/Arrow.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/default_env.tres" type="Environment" id=3]
+[ext_resource path="res://src/default_env.tres" type="Environment" id=2]
+[ext_resource path="res://src/spatial/Arrow.tscn" type="PackedScene" id=3]
 
 [sub_resource type="SpatialMaterial" id=1]
 
@@ -178,10 +178,9 @@ _sections_unfolded = [ "Transform" ]
 shape = SubResource( 3 )
 disabled = false
 
-[node name="Arrow" parent="." index="1" instance=ExtResource( 2 )]
+[node name="Sphere" type="MeshInstance" parent="." index="1"]
 
-[node name="Sphere" type="MeshInstance" parent="." index="2"]
-
+visible = false
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -196,12 +195,12 @@ skeleton = NodePath("..")
 material/0 = null
 _sections_unfolded = [ "Transform" ]
 
-[node name="Camera" type="Camera" parent="." index="3"]
+[node name="Camera" type="Camera" parent="." index="2"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9 )
 keep_aspect = 1
 cull_mask = 1048575
-environment = ExtResource( 3 )
+environment = ExtResource( 2 )
 h_offset = 0.0
 v_offset = 0.0
 doppler_tracking = 0
@@ -240,5 +239,7 @@ directional_shadow_bias_split_scale = 0.25
 directional_shadow_depth_range = 0
 directional_shadow_max_distance = 200.0
 _sections_unfolded = [ "Shadow" ]
+
+[node name="Arrow" parent="." index="3" instance=ExtResource( 3 )]
 
 
