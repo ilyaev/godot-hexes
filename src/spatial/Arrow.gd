@@ -10,10 +10,11 @@ var color = Color('#ff0000') setget set_color, get_color
 var z = 0.11
 var base_angle = 0 setget set_base_angle, get_base_angle
 var current_fixed_angle = 0
+var tip_pos = Vector3(0, 0, 0)
 
 # private
 
-var angle_step = PI / 4
+var angle_step = PI / 8
 var density = 8
 var curve = Curve2D.new()
 var mesh = Mesh.new()
@@ -21,6 +22,7 @@ var mat = SpatialMaterial.new()
 var surface = global.Surface
 
 var original_translation
+var current_tip_selection = false
 
 
 func _ready():
@@ -30,6 +32,17 @@ func _ready():
 	$Mesh.set_material_override(mat)
 	$Mesh.set_mesh(mesh)
 	build()
+
+func select_tip(region):
+	if !is_visible_in_tree():
+		pass
+	if current_tip_selection:
+		current_tip_selection._on_HexRegion_mouse_exited()
+	current_tip_selection = region
+	region._on_HexRegion_mouse_entered()
+
+func get_tip_pos():
+	return tip_pos
 
 func relocate(pos):
 	translation = pos
@@ -128,9 +141,11 @@ func build():
 		surface.add_vertex(points[1][p4])
 		surface.add_vertex(points[1][p3])
 
-		surface.add_vertex(tov3((end + head_shift_left * 1.6), z))
-		surface.add_vertex(tov3((end * 1.4).rotated((angle - base_angle) * 0.15), z))
-		surface.add_vertex(tov3((end + head_shift_right * 1.6), z))
+
+	tip_pos = tov3((end * 1.4).rotated((angle - base_angle) * 0.15), z)
+	surface.add_vertex(tov3((end + head_shift_left * 1.6), z))
+	surface.add_vertex(tip_pos)
+	surface.add_vertex(tov3((end + head_shift_right * 1.6), z))
 
 
 

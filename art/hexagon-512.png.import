@@ -7,10 +7,7 @@ path="res://.import/hexagon-512.png-1c6fc80107c1587de680a9eacbe22ae2.stex"
 [deps]
 
 source_file="res://art/hexagon-512.png"
-source_md5="90eda96b5dcb861cec1d1be2a75687a4"
-
 dest_files=[ "res://.import/hexagon-512.png-1c6fc80107c1587de680a9eacbe22ae2.stex" ]
-dest_md5="193b2f0b9b9d86d5a46228580f194380"
 
 [params]
 

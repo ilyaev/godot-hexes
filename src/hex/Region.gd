@@ -67,7 +67,7 @@ func _physics_process(delta):
 		rotate_y(delta * PI / rotation_speed)
 		rotate_z(delta * PI / rotation_speed)
 
-func _on_HexRegion_mouse_entered():
+func select():
 	$Tween.interpolate_property(
 		self,
 		'transform',
@@ -79,11 +79,13 @@ func _on_HexRegion_mouse_entered():
 	)
 	current_transform = current_transform.translated(Vector3(0,0,selection_shift))
 	$Tween.start()
+
+func _on_HexRegion_mouse_entered():
+	# print('ENTERED? - ', id)
+	# select()
 	pass
 
-
-
-func _on_HexRegion_mouse_exited():
+func deselect():
 	$Tween.interpolate_property(
 		self,
 		'transform',
@@ -95,6 +97,10 @@ func _on_HexRegion_mouse_exited():
 	)
 	current_transform = current_transform.translated(Vector3(0, 0, -selection_shift))
 	$Tween.start()
+
+func _on_HexRegion_mouse_exited():
+	# print('-exited - ', id)
+	# deselect()
 	pass
 
 
