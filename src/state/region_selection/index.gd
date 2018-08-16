@@ -17,7 +17,6 @@ func _init():
 
 func _ready():
     set_state(STATE_DEFAULT)
-    pass
 
 func on_region_clicked(region, position):
     state.on_region_clicked(region, position)

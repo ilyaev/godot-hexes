@@ -19,15 +19,17 @@ func _ready():
 
 	original_transform = $Camera.transform
 
-	global.connect('region_clicked', region_selection, 'on_region_clicked')
-
 	init_states()
 
 	pass
 
 func init_states():
 	region_selection.scene = self
+	global.connect('region_clicked', region_selection, 'on_region_clicked')
+
 	add_child(region_selection)
+
+
 
 func _input(event):
 

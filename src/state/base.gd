@@ -14,6 +14,9 @@ func on_enter():
 func on_exit():
     pass
 
+func set_state(new_state_id):
+    index.set_state(new_state_id)
+
 func process_input(event):
     pass
 

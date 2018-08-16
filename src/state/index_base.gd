@@ -32,7 +32,7 @@ func pop_state():
         return
     var next_id = state_stack[0]
     state_stack.pop_front()
-    set_state(next_id, scene)
+    set_state(next_id)
 
 func process_input(event):
     state.process_input(event)

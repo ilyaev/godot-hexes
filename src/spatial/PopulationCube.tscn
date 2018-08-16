@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://src/selection/Arrow.gd" type="Script" id=1]
+[sub_resource type="CubeMesh" id=1]
 
-[sub_resource type="SpatialMaterial" id=1]
+custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
+size = Vector3( 0.05, 0.05, 0.05 )
+subdivide_width = 0
+subdivide_height = 0
+subdivide_depth = 0
+
+[sub_resource type="SpatialMaterial" id=2]
 
 render_priority = 0
 flags_transparent = false
@@ -25,7 +31,7 @@ params_point_size = 1.0
 params_billboard_mode = 0
 params_grow = false
 params_use_alpha_scissor = false
-albedo_color = Color( 0.9375, 0.0478831, 0.298088, 1 )
+albedo_color = Color( 0.914062, 0.404106, 0.0663432, 1 )
 metallic = 0.0
 metallic_specular = 0.5
 metallic_texture_channel = 0
@@ -54,48 +60,10 @@ proximity_fade_enable = false
 distance_fade_enable = false
 _sections_unfolded = [ "Albedo" ]
 
-[sub_resource type="PrismMesh" id=2]
+[node name="Spatial" type="Spatial" index="0"]
 
-material = SubResource( 1 )
-left_to_right = 0.5
-size = Vector3( 2, 2, 2 )
-subdivide_width = 0
-subdivide_height = 0
-subdivide_depth = 0
+[node name="MeshInstance" type="MeshInstance" parent="." index="0"]
 
-[node name="Arrow" type="Spatial"]
-
-visible = false
-script = ExtResource( 1 )
-_sections_unfolded = [ "Transform" ]
-
-[node name="Area" type="Area" parent="." index="0"]
-
-input_ray_pickable = false
-input_capture_on_drag = false
-space_override = 0
-gravity_point = false
-gravity_distance_scale = 0.0
-gravity_vec = Vector3( 0, -1, 0 )
-gravity = 9.8
-linear_damp = 0.1
-angular_damp = 1.0
-priority = 0.0
-monitoring = true
-monitorable = true
-collision_layer = 1
-collision_mask = 1
-audio_bus_override = false
-audio_bus_name = "Master"
-reverb_bus_enable = false
-reverb_bus_name = "Master"
-reverb_bus_amount = 0.0
-reverb_bus_uniformity = 0.0
-_sections_unfolded = [ "Transform" ]
-
-[node name="Mesh" type="MeshInstance" parent="Area" index="0"]
-
-transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, 0, 0 )
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -105,18 +73,9 @@ lod_min_distance = 0.0
 lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
-mesh = SubResource( 2 )
+mesh = SubResource( 1 )
 skeleton = NodePath("..")
-material/0 = null
-_sections_unfolded = [ "Transform" ]
-
-[node name="Tween" type="Tween" parent="." index="1"]
-
-repeat = false
-playback_process_mode = 1
-playback_speed = 1.0
-playback/active = false
-playback/repeat = false
-playback/speed = 1.0
+material/0 = SubResource( 2 )
+_sections_unfolded = [ "material" ]
 
 

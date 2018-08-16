@@ -13,10 +13,18 @@ var original_transform
 var selection_shift = 0.1
 var capital
 var selected = false
+var population = 8
+var populations
+var scene_populations = preload('../spatial/Populations.tscn')
 
 func _ready():
+	randomize()
 	current_transform = transform
 	original_transform = transform
+	populations = scene_populations.instance()
+	populations.transform = populations.transform.translated(capital.origin)
+	populations.update(randi() % 7 + 1)
+	add_child(populations)
 	pass
 
 func set_country(country):
@@ -68,6 +76,7 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func select():
+	selected = true
 	$Tween.interpolate_property(
 		self,
 		'transform',
@@ -81,11 +90,10 @@ func select():
 	$Tween.start()
 
 func _on_HexRegion_mouse_entered():
-	# print('ENTERED? - ', id)
-	# select()
 	pass
 
 func deselect():
+	selected = false
 	$Tween.interpolate_property(
 		self,
 		'transform',
@@ -99,8 +107,6 @@ func deselect():
 	$Tween.start()
 
 func _on_HexRegion_mouse_exited():
-	# print('-exited - ', id)
-	# deselect()
 	pass
 
 
@@ -118,6 +124,4 @@ func is_reachable(traverse_map):
 
 func _on_HexRegion_input_event(camera, event, click_position, click_normal, shape_idx):
 	if event.is_pressed():
-		selected = !selected
 		global.emit_signal("region_clicked", self, click_position)
-	pass # replace with function body
