@@ -1,7 +1,7 @@
 extends Spatial
 
 var population = 0
-var shift_z = 0.052
+var shift_z = 0.055
 var scene_cube = preload('PopulationCube.tscn')
 
 func _ready():

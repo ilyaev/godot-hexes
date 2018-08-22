@@ -21,6 +21,7 @@ func set_state(new_state_id):
     state = state_classes[state_id]
     state.scene = scene
     state.index = self
+    print('STATE: ', name + '->' + state.name)
     state.on_enter()
 
 

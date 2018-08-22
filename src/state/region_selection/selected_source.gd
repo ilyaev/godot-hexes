@@ -13,28 +13,28 @@ func region_selectable(region):
 func on_enter():
     .on_enter()
     camera_transform = Camera.transform
-    scene.tween.interpolate_property(
-        Camera,
-        'transform',
-        Camera.transform,
-        Camera.transform.rotated(Vector3(0,1,0), PI / 2 * 0 / 300).rotated(Vector3(1,0,0), PI / 2 * 100 / 300).translated(Vector3(0,-0.3,0)),
-        TILT_SPEED,
-        Tween.TRANS_SINE,
-        Tween.EASE_IN
-    )
-    scene.tween.start()
+    # scene.tween.interpolate_property(
+    #     Camera,
+    #     'transform',
+    #     Camera.transform,
+    #     Camera.transform.rotated(Vector3(0,1,0), PI / 2 * 0 / 300).rotated(Vector3(1,0,0), PI / 2 * 100 / 300).translated(Vector3(0,-0.3,0)),
+    #     TILT_SPEED,
+    #     Tween.TRANS_SINE,
+    #     Tween.EASE_IN
+    # )
+    # scene.tween.start()
 
 func on_exit():
-    scene.tween.interpolate_property(
-        Camera,
-        'transform',
-        Camera.transform,
-        camera_transform,
-        TILT_SPEED,
-        Tween.TRANS_SINE,
-        Tween.EASE_IN
-    )
-    scene.tween.start()
+    # scene.tween.interpolate_property(
+    #     Camera,
+    #     'transform',
+    #     Camera.transform,
+    #     camera_transform,
+    #     TILT_SPEED,
+    #     Tween.TRANS_SINE,
+    #     Tween.EASE_IN
+    # )
+    # scene.tween.start()
     Arrow.hide()
     if index.source_selection_id > 0:
         index.source_selection.deselect()
@@ -45,6 +45,10 @@ func on_exit():
 
 func process_input(event):
     if event is InputEventMouseButton:
+        if index.target_selection_id > 0:
+            index.emit_signal("selected", index.source_selection, index.target_selection)
+        else:
+            index.emit_signal("wrong_selection")
         set_state(index.STATE_DEFAULT)
         return
 

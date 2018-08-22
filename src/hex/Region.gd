@@ -13,7 +13,7 @@ var original_transform
 var selection_shift = 0.1
 var capital
 var selected = false
-var population = 8
+var population = 0
 var populations
 var scene_populations = preload('../spatial/Populations.tscn')
 
@@ -21,11 +21,23 @@ func _ready():
 	randomize()
 	current_transform = transform
 	original_transform = transform
+
+	population = randi() % 7 + 1
+
 	populations = scene_populations.instance()
 	populations.transform = populations.transform.translated(capital.origin)
-	populations.update(randi() % 7 + 1)
+	populations.update(population)
 	add_child(populations)
 	pass
+
+func conquest(region):
+	print('Conquest by country: ', region.country_id)
+	set_country(region.country_id)
+	set_color(region.color)
+	population = region.population - 1
+	region.population = 1
+	populations.update(population)
+	region.populations.update(region.population)
 
 func set_country(country):
 	country_id = country

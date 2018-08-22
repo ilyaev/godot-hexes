@@ -9,7 +9,11 @@ var source_selection
 var target_selection_id = -1
 var target_selection
 
+signal selected
+signal wrong_selection
+
 func _init():
+    name = 'SELECTION'
     state_classes = [
         preload("default.gd").new(),
         preload("selected_source.gd").new()
