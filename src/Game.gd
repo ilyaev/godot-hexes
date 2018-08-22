@@ -7,6 +7,7 @@ var original_transform
 var free_look = false
 var tween = Tween.new()
 var region_selection = preload('./state/region_selection/index.gd').new()
+var play = preload('./state/play/index.gd').new()
 
 func _ready():
 	randomize()
@@ -25,10 +26,14 @@ func _ready():
 
 func init_states():
 	region_selection.scene = self
-	global.connect('region_clicked', region_selection, 'on_region_clicked')
+	play.scene = self
+
+	global.connect('region_clicked', play, 'on_region_clicked')
+	region_selection.connect('selected', play, 'resolve_selection')
+	region_selection.connect('wrong_selection', play, 'cancel_selection')
 
 	add_child(region_selection)
-
+	add_child(play)
 
 
 func _input(event):
