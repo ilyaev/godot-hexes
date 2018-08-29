@@ -4,11 +4,11 @@ var region_class = preload("Region.tscn")
 var outline_class = preload("Outline.tscn")
 var cells_class = preload('Cells.gd')
 
-var cols = 40
-var rows = 32
-var regions_count = round(cols * rows / 23)
+var cols = 50
+var rows = 34
+var regions_count = 60 # round(cols * rows / 23)
 var voids_count = round(regions_count * 0.3)
-var country_count = 3
+var country_count = 5
 
 var size = 0.05
 var height = -0.1

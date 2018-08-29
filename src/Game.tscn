@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/Game.gd" type="Script" id=1]
 [ext_resource path="res://src/default_env.tres" type="Environment" id=2]
-[ext_resource path="res://src/spatial/Arrow.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/hud/Container.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/spatial/Arrow.tscn" type="PackedScene" id=4]
 
 [sub_resource type="SpatialMaterial" id=1]
 
@@ -136,7 +137,11 @@ near = 0.05
 far = 100.0
 _sections_unfolded = [ "Transform" ]
 
-[node name="DirectionalLight" type="DirectionalLight" parent="Camera" index="0"]
+[node name="Hud" parent="Camera" index="0" instance=ExtResource( 3 )]
+
+visible = false
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Camera" index="1"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.91213, 1.24841, 2.59543 )
 layers = 1
@@ -164,6 +169,16 @@ directional_shadow_depth_range = 0
 directional_shadow_max_distance = 200.0
 _sections_unfolded = [ "Shadow" ]
 
-[node name="Arrow" parent="." index="2" instance=ExtResource( 3 )]
+[node name="Arrow" parent="." index="2" instance=ExtResource( 4 )]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="3"]
+
+layer = 1
+offset = Vector2( 0, 0 )
+rotation = 0.0
+scale = Vector2( 1, 1 )
+transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+
+[node name="Container" parent="CanvasLayer" index="0" instance=ExtResource( 3 )]
 
 

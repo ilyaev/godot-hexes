@@ -15,6 +15,7 @@ func _ready():
 	Grid = HexGrid_class.instance()
 	Grid.build_all()
 	add_child(Grid)
+	fit_to_screen()
 
 	add_child(tween)
 
@@ -23,6 +24,9 @@ func _ready():
 	init_states()
 
 	pass
+
+func fit_to_screen():
+	Grid.transform = Grid.transform.translated(Vector3(0.4,-0.025,0))
 
 func init_states():
 	region_selection.scene = self
@@ -53,6 +57,7 @@ func _input(event):
 			Grid = HexGrid_class.instance()
 			Grid.build_all()
 			add_child(Grid)
+			fit_to_screen()
 
 		if Input.is_key_pressed(KEY_W):
 			tween.interpolate_property($Camera, 'transform', $Camera.transform, $Camera.transform.translated(Vector3(0,0,-0.3)), 0.2, Tween.TRANS_SINE, Tween.EASE_IN)

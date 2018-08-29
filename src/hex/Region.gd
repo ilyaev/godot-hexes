@@ -30,14 +30,9 @@ func _ready():
 	add_child(populations)
 	pass
 
-func conquest(region):
-	print('Conquest by country: ', region.country_id)
-	set_country(region.country_id)
-	set_color(region.color)
-	population = region.population - 1
-	region.population = 1
+func set_population(new_population):
+	population = new_population
 	populations.update(population)
-	region.populations.update(region.population)
 
 func set_country(country):
 	country_id = country
