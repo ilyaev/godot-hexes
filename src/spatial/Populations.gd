@@ -23,4 +23,6 @@ func update(new_population):
 			ii = i - 4
 
 		cube.transform = cube_transform.translated(Vector3(0,ii * 0.02 * osign, ii * shift_z))
+		# .rotated(Vector3(0,0,1), PI/3)
+		# .rotated(Vector3(1,0,0), -PI/2)
 		$Cubes.add_child(cube)

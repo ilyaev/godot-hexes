@@ -129,6 +129,6 @@ func is_reachable(traverse_map):
 	var traverse = get_reachability(traverse_map, id, [])
 	return traverse.size() == traverse_map.size()
 
-func _on_HexRegion_input_event(camera, event, click_position, click_normal, shape_idx):
-	if event.is_pressed():
-		global.emit_signal("region_clicked", self, click_position)
+# func _on_HexRegion_input_event(camera, event, click_position, click_normal, shape_idx):
+# 	if event.is_pressed():
+# 		global.emit_signal("region_clicked", self, click_position)

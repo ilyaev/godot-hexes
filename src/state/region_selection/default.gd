@@ -33,3 +33,9 @@ func process_input(event):
                     index.source_selection.deselect()
                     index.source_selection_id = -1
 
+
+    if event is InputEventMouseButton and event.is_pressed():
+        var mouse = mouse_collision(event)
+        if mouse and mouse.collider.has_method('select'):
+            global.emit_signal("region_clicked", mouse.collider, mouse.position)
+
