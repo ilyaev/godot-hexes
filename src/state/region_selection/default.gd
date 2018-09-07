@@ -11,7 +11,7 @@ func on_region_clicked(region, position):
     Arrow.target_pos = position - Arrow.translation
     Arrow.build()
     Arrow.show()
-    index.set_state(index.SELECTED_SOURCE)
+    set_state(index.SELECTED_SOURCE)
 
 func process_input(event):
     if event is InputEventMouseMotion:

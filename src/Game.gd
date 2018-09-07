@@ -7,7 +7,7 @@ var original_transform
 var free_look = false
 var tween = Tween.new()
 var region_selection = preload('./state/region_selection/index.gd').new()
-var play = preload('./state/play/index.gd').new()
+var turn = preload('./state/turn/index.gd').new()
 
 func _ready():
 	randomize()
@@ -19,25 +19,27 @@ func _ready():
 
 	add_child(tween)
 
-	original_transform = $Camera.transform
-
 	init_states()
 
 	pass
 
 func fit_to_screen():
-	Grid.transform = Grid.transform.translated(Vector3(0.4,-0.025,0))
+	var scale = 1
+	$Camera.transform = $Camera.transform.rotated(Vector3(1,0,0), PI/8).translated(Vector3(0,-0.2,0)).scaled(Vector3(scale, scale, scale))
+	original_transform = $Camera.transform
+
+	pass
 
 func init_states():
 	region_selection.scene = self
-	play.scene = self
+	turn.scene = self
 
-	global.connect('region_clicked', play, 'on_region_clicked')
-	region_selection.connect('selected', play, 'resolve_selection')
-	region_selection.connect('wrong_selection', play, 'cancel_selection')
+	global.connect('region_clicked', turn, 'on_region_clicked')
+	region_selection.connect('selected', turn, 'resolve_selection')
+	region_selection.connect('wrong_selection', turn, 'cancel_selection')
 
 	add_child(region_selection)
-	add_child(play)
+	add_child(turn)
 
 
 func _input(event):
@@ -57,7 +59,6 @@ func _input(event):
 			Grid = HexGrid_class.instance()
 			Grid.build_all()
 			add_child(Grid)
-			fit_to_screen()
 
 		if Input.is_key_pressed(KEY_W):
 			tween.interpolate_property($Camera, 'transform', $Camera.transform, $Camera.transform.translated(Vector3(0,0,-0.3)), 0.2, Tween.TRANS_SINE, Tween.EASE_IN)
