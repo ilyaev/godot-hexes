@@ -83,6 +83,8 @@ func _physics_process(delta):
 		rotate_z(delta * PI / rotation_speed)
 
 func select():
+	if selected:
+		return
 	selected = true
 	$Tween.interpolate_property(
 		self,
@@ -100,6 +102,8 @@ func _on_HexRegion_mouse_entered():
 	pass
 
 func deselect():
+	if !selected:
+		return
 	selected = false
 	$Tween.interpolate_property(
 		self,

@@ -8,6 +8,7 @@ var region_selection = preload('./state/region_selection/index.gd').new()
 var turn = preload('./state/turn/index.gd').new()
 var debug = preload('./state/debug/index.gd').new()
 
+
 func _ready():
 	randomize()
 
@@ -20,6 +21,7 @@ func _ready():
 	add_child(tween)
 
 	init_states()
+	init_commands()
 
 	pass
 
@@ -41,7 +43,17 @@ func init_states():
 	add_child(turn)
 	add_child(debug)
 
+func init_commands():
+	commands.index.scene = self
+	# add_child(commands)
+
 
 func _input(event):
-	region_selection.process_input(event)
-	debug.process_input(event)
+	add_commands(region_selection.process_input(event))
+	add_commands(debug.process_input(event))
+
+func add_commands(items):
+	if typeof(items) == TYPE_ARRAY and items.size() > 0:
+		for cmd in items:
+			if cmd.has('id'):
+				commands.add(cmd)

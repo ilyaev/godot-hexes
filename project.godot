@@ -17,6 +17,7 @@ config/icon="res://art/hexagon-512.png"
 [autoload]
 
 global="*res://src/global.gd"
+commands="*res://src/commands.gd"
 
 [display]
 

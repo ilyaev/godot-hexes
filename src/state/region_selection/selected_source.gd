@@ -13,37 +13,32 @@ func region_selectable(region):
 func on_enter():
     .on_enter()
     camera_transform = Camera.transform
-    # scene.tween.interpolate_property(
-    #     Camera,
-    #     'transform',
-    #     Camera.transform,
-    #     Camera.transform.rotated(Vector3(0,1,0), PI / 2 * 0 / 300).rotated(Vector3(1,0,0), PI / 2 * 100 / 300).translated(Vector3(0,-0.3,0)),
-    #     TILT_SPEED,
-    #     Tween.TRANS_SINE,
-    #     Tween.EASE_IN
-    # )
-    # scene.tween.start()
+
+    commands.add({
+        "id": commands.CMD_SELECTION_ARROW_SHOW,
+        "region": index.source_selection,
+        "position": global.mouse_position
+    })
 
 func on_exit():
-    # scene.tween.interpolate_property(
-    #     Camera,
-    #     'transform',
-    #     Camera.transform,
-    #     camera_transform,
-    #     TILT_SPEED,
-    #     Tween.TRANS_SINE,
-    #     Tween.EASE_IN
-    # )
-    # scene.tween.start()
     Arrow.hide()
     if index.source_selection_id > 0:
-        index.source_selection.deselect()
+        commands.add({
+            "id": commands.CMD_REGION_SELECT,
+            "region": index.source_selection,
+            "select": false
+        })
         index.source_selection_id = -1
     if index.target_selection_id > 0:
-        index.target_selection.deselect()
+        commands.add({
+            "id": commands.CMD_REGION_SELECT,
+            "region": index.target_selection,
+            "select": false
+        })
         index.target_selection_id = -1
 
 func process_input(event):
+    var result = []
     if event is InputEventMouseButton:
         if index.target_selection_id > 0:
             index.emit_signal("selected", index.source_selection, index.target_selection)
@@ -62,16 +57,23 @@ func process_input(event):
                 mouse.position,
                 Camera.unproject_position(mouse.position)
             )
-
             Arrow.target_pos = mouse.position - Arrow.translation
 
         if tip:
             if tip.collider.has_method('select') and tip.collider.id != index.source_selection_id:
                 if index.target_selection_id != tip.collider.id:
                     if index.target_selection_id > 0:
-                        index.target_selection.deselect()
+                        result.append({
+                            "id": commands.CMD_REGION_SELECT,
+                            "region": index.target_selection,
+                            "select": false
+                        })
                     if region_selectable(tip.collider):
-                        tip.collider.select()
+                        result.append({
+                            "id": commands.CMD_REGION_SELECT,
+                            "region": tip.collider,
+                            "select": true
+                        })
                         index.target_selection = tip.collider
                         index.target_selection_id = index.target_selection.id
                     else:
@@ -79,6 +81,11 @@ func process_input(event):
                         index.target_selection_id = -1
             else:
                 if index.target_selection_id > 0:
-                    index.target_selection.deselect()
+                    result.append({
+                        "id": commands.CMD_REGION_SELECT,
+                        "region": index.target_selection,
+                        "select": false
+                    })
                     index.target_selection_id = -1
+    return result
 

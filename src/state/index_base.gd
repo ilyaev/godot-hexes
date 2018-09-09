@@ -21,7 +21,8 @@ func set_state(new_state_id):
     state = state_classes[state_id]
     state.scene = scene
     state.index = self
-    print('STATE: ', name + '->' + state.name)
+    if global.DEBUG.states:
+        print('STATE: ', name + '->' + state.name)
     state.on_enter()
 
 
@@ -36,4 +37,4 @@ func pop_state():
     set_state(next_id)
 
 func process_input(event):
-    state.process_input(event)
+    return state.process_input(event)

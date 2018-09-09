@@ -1,5 +1,10 @@
 extends Node
 
+const DEBUG = {
+    "commands": true,
+    "states": true
+}
+
 var mode = 'dev'
 var _start_time = 0
 var MeshTool = MeshDataTool.new()
