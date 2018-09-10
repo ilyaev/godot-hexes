@@ -1,7 +1,6 @@
 extends "base.gd"
 
 var camera_transform
-const TILT_SPEED = 0.3
 
 func _init():
     name = "SELECTED_SOURCE"
@@ -21,7 +20,14 @@ func on_enter():
     })
 
 func on_exit():
-    Arrow.hide()
+
+    commands.add({
+        "id": commands.CMD_SELECTION_ARROW_SHOW,
+        "hide": true,
+        "region": index.source_selection,
+        "position": global.mouse_position
+    })
+
     if index.source_selection_id > 0:
         commands.add({
             "id": commands.CMD_REGION_SELECT,
@@ -29,6 +35,7 @@ func on_exit():
             "select": false
         })
         index.source_selection_id = -1
+
     if index.target_selection_id > 0:
         commands.add({
             "id": commands.CMD_REGION_SELECT,
@@ -57,7 +64,10 @@ func process_input(event):
                 mouse.position,
                 Camera.unproject_position(mouse.position)
             )
-            Arrow.target_pos = mouse.position - Arrow.translation
+            result.append({
+                "id": commands.CMD_SELECTION_ARROW_MOVE,
+                "position": mouse.position
+            })
 
         if tip:
             if tip.collider.has_method('select') and tip.collider.id != index.source_selection_id:

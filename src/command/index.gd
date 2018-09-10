@@ -4,7 +4,10 @@ var scene
 
 var classes = [
     preload('./region_select.gd'),
-    preload('./selection_arrow_show.gd')
+    preload('./selection_arrow_show.gd'),
+    preload('./selection_arrow_move.gd'),
+    preload('./start_round.gd'),
+    # %%NEXT_CMD%%
 ]
 
 func _init():
@@ -17,3 +20,4 @@ func add(params):
     if global.DEBUG.commands:
         print("CMD: ", [cmd.name, params])
     cmd.execute()
+    cmd.free()
