@@ -1,3 +1,5 @@
+// node ./tools/add_cmd
+
 var fs = require('fs')
 
 var cmd = process.argv[2]

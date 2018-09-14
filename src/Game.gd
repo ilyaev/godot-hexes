@@ -7,12 +7,20 @@ var tween = Tween.new()
 var region_selection = preload('./state/region_selection/index.gd').new()
 var turn = preload('./state/turn/index.gd').new()
 var debug = preload('./state/debug/index.gd').new()
+var game = preload('./state/game/index.gd').new()
+
+onready var Hud = get_node('HudCanvas/Hud')
+onready var PlayersPanel = get_node('HudCanvas/Hud/PlayersPanel')
+
+
+var players_count = 3
 
 
 func _ready():
 	randomize()
 
 	Grid = HexGrid_class.instance()
+	Grid.country_count = players_count
 	Grid.build_all()
 	add_child(Grid)
 
@@ -23,7 +31,14 @@ func _ready():
 	init_states()
 	init_commands()
 
+	start_game()
+
 	pass
+
+func start_game():
+	game.start()
+	pass
+
 
 func fit_to_screen():
 	var scale = 1
@@ -34,6 +49,7 @@ func init_states():
 	region_selection.scene = self
 	turn.scene = self
 	debug.scene = self
+	game.scene = self
 
 	global.connect('region_clicked', turn, 'on_region_clicked')
 	region_selection.connect('selected', turn, 'resolve_selection')
@@ -42,10 +58,10 @@ func init_states():
 	add_child(region_selection)
 	add_child(turn)
 	add_child(debug)
+	add_child(game)
 
 func init_commands():
 	commands.index.scene = self
-	# add_child(commands)
 
 
 func _input(event):

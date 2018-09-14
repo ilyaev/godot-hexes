@@ -67,7 +67,7 @@ size = Vector2( 1, 1 )
 
 extents = Vector3( 0.5, 0.5, 0.001 )
 
-[node name="Game" type="Spatial" index="0"]
+[node name="Game" type="Spatial"]
 
 script = ExtResource( 1 )
 _sections_unfolded = [ "Transform" ]
@@ -167,7 +167,7 @@ _sections_unfolded = [ "Shadow" ]
 
 [node name="Arrow" parent="." index="2" instance=ExtResource( 3 )]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." index="3"]
+[node name="HudCanvas" type="CanvasLayer" parent="." index="3"]
 
 layer = 1
 offset = Vector2( 0, 0 )
@@ -175,6 +175,6 @@ rotation = 0.0
 scale = Vector2( 1, 1 )
 transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 
-[node name="Container" parent="CanvasLayer" index="0" instance=ExtResource( 4 )]
+[node name="Hud" parent="HudCanvas" index="0" instance=ExtResource( 4 )]
 
 
