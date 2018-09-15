@@ -7,7 +7,8 @@ func on_enter():
     .on_enter()
 
 func on_region_clicked(region, position):
-    set_state(index.SELECTED_SOURCE)
+    if region.get_player() == index.scene.get_active_player():
+        set_state(index.SELECTED_SOURCE)
 
 func process_input(event):
     var results = []
@@ -18,7 +19,7 @@ func process_input(event):
                 mouse.position,
                 Camera.unproject_position(mouse.position)
             )
-            if mouse.collider.has_method('select'):
+            if mouse.collider.has_method('select') && mouse.collider.get_player() == index.scene.get_active_player():
                 if index.source_selection_id != mouse.collider.id:
                     results.append({
                         "id": commands.CMD_REGION_SELECT,

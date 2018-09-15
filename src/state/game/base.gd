@@ -5,3 +5,6 @@ func _init():
 
 func start():
     pass
+
+func process_input():
+    pass

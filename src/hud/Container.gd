@@ -17,8 +17,6 @@ func setup_game(players_count):
 		player.index = index
 		PlayersPanel.add_child(player)
 
-	set_active_player(active_player)
-
 func get_player(index):
 	return PlayersPanel.get_children()[index]
 

@@ -60,6 +60,9 @@ func init_states():
 	add_child(debug)
 	add_child(game)
 
+func get_active_player():
+	return game.active_player
+
 func init_commands():
 	commands.index.scene = self
 
@@ -67,6 +70,7 @@ func init_commands():
 func _input(event):
 	add_commands(region_selection.process_input(event))
 	add_commands(debug.process_input(event))
+	add_commands(game.process_input(event))
 
 func add_commands(items):
 	if typeof(items) == TYPE_ARRAY and items.size() > 0:

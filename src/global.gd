@@ -5,6 +5,18 @@ const DEBUG = {
     "states": true
 }
 
+var color_map = [
+	Color(0,0,0),
+	Color("#b3ff01"),
+	Color("#b37ffe"),
+	Color("#009302"),
+	Color("#ff7ffe"),
+	Color("#ff7f02"),
+	Color("#b2fffe"),
+	Color("#ffff02"),
+	Color("#ff5858")
+]
+
 var mode = 'dev'
 var _start_time = 0
 var MeshTool = MeshDataTool.new()
@@ -26,6 +38,9 @@ func print_profile(caption = "TS"):
 
 func end_profile():
     _start_time = 0
+
+func get_player_color(index):
+    return color_map[index + 1]
 
 func round_vector(val, precision = 3):
     var result = Vector3(0,0,0)

@@ -46,6 +46,9 @@ func add_links(new_links):
 		if !links.has(link):
 			links.push_back(link)
 
+func get_player():
+	return country_id - 1
+
 func add_hex(hex):
 	hexes.push_back(hex)
 	if hex.is_capital:

@@ -7,6 +7,7 @@ var classes = [
     preload('./selection_arrow_show.gd'),
     preload('./selection_arrow_move.gd'),
     preload('./start_round.gd'),
+    preload('./end_turn.gd'),
     # %%NEXT_CMD%%
 ]
 

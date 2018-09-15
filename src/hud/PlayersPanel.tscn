@@ -23,5 +23,6 @@ _sections_unfolded = [ "Grow Direction" ]
 margin_top = 236.0
 margin_right = 128.0
 margin_bottom = 364.0
+_sections_unfolded = [ "Rect", "Visibility" ]
 
 

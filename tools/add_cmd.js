@@ -43,7 +43,7 @@ var cmdFile = [
     'func _init():',
     "   name = '" + cmdFileName.toUpperCase() + "'",
     '',
-    'func set_params():',
+    'func set_params(params):',
     '   pass',
     '',
     'func execute():',

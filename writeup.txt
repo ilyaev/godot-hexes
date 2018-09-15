@@ -1,0 +1,4 @@
+end_turn
+    - calculate score
+    - distribute points to regions
+    - switch to next player

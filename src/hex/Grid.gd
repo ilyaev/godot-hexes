@@ -26,23 +26,14 @@ var traverse_map = {}
 var Outline
 var Cells
 
-var color_map = [
-	Color(0,0,0),
-	Color("#b3ff01"),
-	Color("#b37ffe"),
-	Color("#009302"),
-	Color("#ff7ffe"),
-	Color("#ff7f02"),
-	Color("#b2fffe"),
-	Color("#ffff02"),
-	Color("#ff5858")
-]
-
+var color_map
 
 func _ready():
+
 	pass
 
 func build_all():
+	color_map = global.color_map
 	global.start_profile()
 	build_hexes()
 	global.print_profile('Buld Hexes')

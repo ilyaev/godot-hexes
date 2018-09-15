@@ -1,12 +1,14 @@
 extends TextureRect
 
 var index = -1
+var score = 0
 
 func _ready():
+	modulate = global.get_player_color(index)
 	pass
 
 func activate():
-	modulate = Color(1,0,0,1)
+	$Active.show()
 
 func deactivate():
-	modulate = Color(1,1,1,1)
+	$Active.hide()

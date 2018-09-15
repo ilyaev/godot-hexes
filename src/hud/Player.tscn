@@ -21,4 +21,12 @@ texture = ExtResource( 1 )
 stretch_mode = 0
 script = ExtResource( 2 )
 
+[node name="Active" type="Sprite" parent="." index="0"]
+
+visible = false
+position = Vector2( 63.8698, 82.3157 )
+scale = Vector2( 0.22614, 0.206349 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+
 
