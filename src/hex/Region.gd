@@ -17,6 +17,8 @@ var population = 0
 var populations
 var scene_populations = preload('../spatial/Populations.tscn')
 
+signal population_increase_animation_completed
+
 func _ready():
 	randomize()
 	current_transform = transform
@@ -29,6 +31,12 @@ func _ready():
 	populations.update(population)
 	add_child(populations)
 	pass
+
+func increase_population():
+	var tween = populations.add_cube()
+	population = populations.population
+	yield(tween, "tween_completed")
+	emit_signal("population_increase_animation_completed")
 
 func set_population(new_population):
 	population = new_population

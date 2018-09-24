@@ -527,3 +527,11 @@ func get_region(region_id):
 		if region.id == region_id:
 			return region
 	return {"id": -1}
+
+
+func get_regions_by_player_id(player_id):
+	var result = []
+	for region in $Regions.get_children():
+		if region.country_id == (player_id + 1):
+			result.append(region)
+	return result
