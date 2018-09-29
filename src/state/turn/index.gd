@@ -30,8 +30,8 @@ func _ready():
     set_state(STATE_DEFAULT)
 
 
-func on_region_clicked(region, position):
-    state.on_region_clicked(region, position)
+func on_region_clicked(region):
+    state.on_region_clicked(region)
 
 
 func resolve_selection(source_region, target_region):

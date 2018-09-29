@@ -10,6 +10,7 @@ var rotation_speed = 0
 var color
 var current_transform
 var original_transform
+var default_selection_shift = 0.1
 var selection_shift = 0.1
 var capital
 var selected = false

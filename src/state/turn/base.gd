@@ -4,7 +4,7 @@ func _init():
     name = 'BASE'
 
 
-func on_region_clicked(region, position):
+func on_region_clicked(region):
     pass
 
 

@@ -526,7 +526,7 @@ func get_region(region_id):
 	for region in $Regions.get_children():
 		if region.id == region_id:
 			return region
-	return {"id": -1}
+	return {"id": -1, "country_id": -1}
 
 
 func get_regions_by_player_id(player_id):

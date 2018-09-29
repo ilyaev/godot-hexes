@@ -34,11 +34,10 @@ func add_cube():
 		Tween.EASE_OUT
 	)
 	tween.connect("tween_completed", self, "on_new_cube_added", [tween])
-	add_child(cube)
+	$Cubes.add_child(cube)
 	add_child(tween)
 	tween.start()
 	return tween
-	pass
 
 func on_new_cube_added(obj, path, tween):
 	tween.queue_free()

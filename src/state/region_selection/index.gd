@@ -9,8 +9,7 @@ var source_selection
 var target_selection_id = -1
 var target_selection
 
-signal selected
-signal wrong_selection
+var links = []
 
 func _init():
     name = 'SELECTION'

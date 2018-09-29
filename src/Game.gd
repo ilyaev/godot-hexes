@@ -46,14 +46,11 @@ func fit_to_screen():
 	original_transform = $Camera.transform
 
 func init_states():
-	region_selection.scene = self
-	turn.scene = self
-	debug.scene = self
 	game.scene = self
+	turn.scene = self
+	region_selection.scene = self
+	debug.scene = self
 
-	global.connect('region_clicked', turn, 'on_region_clicked')
-	region_selection.connect('selected', turn, 'resolve_selection')
-	region_selection.connect('wrong_selection', turn, 'cancel_selection')
 
 	add_child(region_selection)
 	add_child(turn)
