@@ -6,9 +6,6 @@ func _init():
     name = "SELECTED_SOURCE"
 
 
-func region_selectable(region):
-    return region.links.has(index.source_selection_id) && region.country_id != index.source_selection.country_id
-
 func on_enter():
     .on_enter()
     camera_transform = Camera.transform

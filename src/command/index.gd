@@ -3,9 +3,6 @@ extends Node
 var scene
 
 var classes = [
-    preload('./region_select.gd'),
-    preload('./selection_arrow_show.gd'),
-    preload('./selection_arrow_move.gd'),
     preload('./start_round.gd'),
     preload('./end_turn.gd'),
     preload('./select_source_region.gd'),

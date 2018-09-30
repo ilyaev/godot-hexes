@@ -1,13 +1,10 @@
 extends Node
 
-const CMD_REGION_SELECT = 0
-const CMD_SELECTION_ARROW_SHOW = 1
-const CMD_SELECTION_ARROW_MOVE = 2
-const CMD_START_ROUND = 3
-const CMD_END_TURN = 4
-const CMD_SELECT_SOURCE_REGION = 5
-const CMD_SELECT_TARGET_REGION = 6
-# %%NEXT_ID:7%%
+const CMD_START_ROUND = 0
+const CMD_END_TURN = 1
+const CMD_SELECT_SOURCE_REGION = 2
+const CMD_SELECT_TARGET_REGION = 3
+# %%NEXT_ID:5%%
 
 var index = preload('./command/index.gd').new()
 
