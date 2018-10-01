@@ -18,10 +18,12 @@ func execute():
 
     if prev >= 0:
         selection_index.source_selection.deselect()
+        selection_index.source_selection.restore_color()
 
     selection_index.source_selection = region
     selection_index.source_selection_id = selection_index.source_selection.id
     region.select()
+    region.highlight()
 
     if prev < 0:
         selection_index.set_state(selection_index.SELECTED_SOURCE)

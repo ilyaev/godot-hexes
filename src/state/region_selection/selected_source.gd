@@ -15,6 +15,7 @@ func on_exit():
         link.deselect()
     index.links.clear()
     index.source_selection.deselect()
+    index.source_selection.restore_color()
     index.source_selection_id = -1
     index.target_selection_id = -1
     index.source_selection = false

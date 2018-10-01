@@ -16,7 +16,7 @@ func conquest_region():
     var target = index.target_region
 
     target.set_country(source.country_id)
-    target.set_color(source.color)
+    target.turn_to_color(source.color)
 
     target.set_population(source.population - 1)
     source.set_population(1)

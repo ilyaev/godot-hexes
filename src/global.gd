@@ -5,6 +5,8 @@ const DEBUG = {
     "states": true
 }
 
+const REGION_HIGHLIGHT_COLOR = Color(1, 0, 0)
+
 var color_map = [
 	Color(0,0,0),
 	Color("#b3ff01"),

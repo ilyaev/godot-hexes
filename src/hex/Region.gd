@@ -110,6 +110,43 @@ func select():
 	current_transform = current_transform.translated(Vector3(0,0,selection_shift))
 	$Tween.start()
 
+func highlight():
+	$TweenColor.interpolate_property(
+		mat,
+		'albedo_color',
+		mat.albedo_color,
+		global.REGION_HIGHLIGHT_COLOR,
+		1,
+		Tween.TRANS_EXPO,
+		Tween.EASE_OUT
+	)
+	$TweenColor.start()
+
+func restore_color():
+	$TweenColor.interpolate_property(
+		mat,
+		'albedo_color',
+		mat.albedo_color,
+		color,
+		1,
+		Tween.TRANS_SINE,
+		Tween.EASE_IN_OUT
+	)
+	$TweenColor.start()
+
+func turn_to_color(new_color):
+	$TweenColor.interpolate_property(
+		mat,
+		'albedo_color',
+		mat.albedo_color,
+		new_color,
+		1,
+		Tween.TRANS_SINE,
+		Tween.EASE_IN_OUT
+	)
+	$TweenColor.start()
+	color = new_color
+
 func _on_HexRegion_mouse_entered():
 	pass
 
