@@ -1,6 +1,7 @@
 extends './base.gd'
 
 var region
+
 var selection_index
 
 func _init():

@@ -2,6 +2,7 @@ extends './base.gd'
 
 var region
 var selection_index
+
 var links
 
 func _init():

@@ -10,6 +10,8 @@ func on_enter():
     else:
         lose_battle()
     set_state(index.STATE_DEFAULT)
+    yield(index.scene.region_selection, "deselected")
+    index.emit_signal("turn_resolved")
 
 func conquest_region():
     var source = index.source_region

@@ -11,6 +11,8 @@ var target_selection
 
 var links = []
 
+signal deselected
+
 func _init():
     name = 'SELECTION'
     state_classes = [

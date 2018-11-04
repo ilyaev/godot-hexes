@@ -11,6 +11,7 @@ func on_enter():
     camera_transform = Camera.transform
 
 func on_exit():
+    var tmp_region = index.source_selection
     for link in index.links:
         link.deselect()
     index.links.clear()
@@ -20,6 +21,9 @@ func on_exit():
     index.target_selection_id = -1
     index.source_selection = false
     index.target_selection = false
+    if tmp_region:
+        yield(tmp_region, "selection_finish")
+    index.emit_signal("deselected")
     pass
 
 func process_input(event):

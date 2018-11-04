@@ -13,6 +13,7 @@ var source_region
 var target_region
 var win
 
+signal turn_resolved
 
 func _init():
     name = 'PLAY'

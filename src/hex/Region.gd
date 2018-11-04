@@ -10,15 +10,18 @@ var rotation_speed = 0
 var color
 var current_transform
 var original_transform
-var default_selection_shift = 0.1
-var selection_shift = 0.1
 var capital
 var selected = false
 var population = 0
 var populations
 var scene_populations = preload('../spatial/Populations.tscn')
 
+var selection_speed = 0.2
+var default_selection_shift = 0.1
+var selection_shift = 0.1
+
 signal population_increase_animation_completed
+signal selection_finish
 
 func _ready():
 	randomize()
@@ -103,12 +106,14 @@ func select():
 		'transform',
 		transform,
 		current_transform.translated(Vector3(0, 0, selection_shift)),
-		0.2,
+		selection_speed,
 		Tween.TRANS_EXPO,
 		Tween.EASE_OUT
 	)
 	current_transform = current_transform.translated(Vector3(0,0,selection_shift))
 	$Tween.start()
+	yield($Tween, "tween_completed")
+	emit_signal("selection_finish")
 
 func highlight():
 	$TweenColor.interpolate_property(
@@ -159,12 +164,14 @@ func deselect():
 		'transform',
 		transform,
 		current_transform.translated(Vector3(0, 0, -selection_shift)),
-		0.2,
+		selection_speed,
 		Tween.TRANS_SINE,
 		Tween.EASE_IN
 	)
 	current_transform = current_transform.translated(Vector3(0, 0, -selection_shift))
 	$Tween.start()
+	yield($Tween, "tween_completed")
+	emit_signal("selection_finish")
 
 func _on_HexRegion_mouse_exited():
 	pass

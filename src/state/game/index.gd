@@ -4,6 +4,7 @@ const STATE_DEFAULT = 0
 const STATE_SETUP = 1
 const STATE_MAKE_TURN = 2
 const STATE_APPLY_SCORE = 3
+const STATE_MAKE_TURN_AI = 4
 
 var Camera
 var Arrow
@@ -22,7 +23,8 @@ func _init():
         preload("default.gd").new(),
         preload("setup.gd").new(),
         preload("make_turn.gd").new(),
-        preload("apply_score.gd").new()
+        preload("apply_score.gd").new(),
+        preload("make_turn_ai.gd").new()
     ]
 
 func _ready():
